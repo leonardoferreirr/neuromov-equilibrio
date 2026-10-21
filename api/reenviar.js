@@ -1,5 +1,6 @@
 /* Reenvio diário (cron da Vercel, ver vercel.json): manda por e-mail as inscrições que ficaram só no
-   banco. Também mantém o projeto do Supabase acordado (o plano grátis pausa após 7 dias sem uso).
+   banco e apaga as que passaram de 180 dias. Também mantém o projeto do Supabase acordado (o plano
+   grátis pausa após 7 dias sem uso).
    Pode ser chamado por qualquer um sem risco: só manda e-mail para a Neuromov, no máximo uma vez por
    hora por inscrição, e a resposta tem só contagens. */
 const L = require('../lib/inscricao');
@@ -8,9 +9,13 @@ module.exports = async (req, res) => {
   if (process.env.CRON_SECRET && req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).json({ ok: false });
   if (!L.bancoLigado()) return res.status(200).json({ ok: true, banco: false });
 
+  // retenção da página de privacidade: o banco não guarda inscrição por mais de 180 dias
+  let apagadas = 0;
+  try { apagadas = await L.apagarAntigas(); } catch (e) { console.error('reenviar retencao', e.message); }
+
   let lista;
   try { lista = await L.pendentes(); } catch (e) { console.error('reenviar lista', e.message); return res.status(502).json({ ok: false }); }
-  if (!L.emailLigado()) return res.status(200).json({ ok: true, pendentes: lista.length, enviados: 0 });
+  if (!L.emailLigado()) return res.status(200).json({ ok: true, pendentes: lista.length, enviados: 0, apagadas });
 
   let enviados = 0;
   for (const r of lista) {
@@ -22,5 +27,5 @@ module.exports = async (req, res) => {
     } catch (e) { erro = e.message; console.error('reenviar email', r.id, e.message); }
     try { await L.marcarEnvio(r.id, !erro, erro, (r.tentativas || 0) + 1); } catch (e) { console.error('reenviar marca', e.message); }
   }
-  return res.status(200).json({ ok: true, pendentes: lista.length, enviados });
+  return res.status(200).json({ ok: true, pendentes: lista.length, enviados, apagadas });
 };

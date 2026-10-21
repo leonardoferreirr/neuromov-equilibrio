@@ -27,7 +27,7 @@ create table if not exists neuromov.inscricoes (
 
 alter table neuromov.inscricoes enable row level security;
 revoke all on neuromov.inscricoes from public, anon, authenticated;
-grant select, insert, update on neuromov.inscricoes to service_role;
+grant select, insert, update, delete on neuromov.inscricoes to service_role;  -- delete: retenção de 180 dias
 
 create index if not exists inscricoes_pendentes on neuromov.inscricoes (criado_em) where not email_enviado;
 create index if not exists inscricoes_ip on neuromov.inscricoes (ip_hash, criado_em);

@@ -3,6 +3,6 @@
   "private": true,
   "description": "Landing do curso Equilíbrio na Prática Clínica (Neuromov)",
   "dependencies": {
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^10.2.0"
   }
 }
