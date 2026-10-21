@@ -52,7 +52,7 @@ Comprovante: foto grande é reduzida no próprio celular antes do envio. PDF tem
 
 Lighthouse (local, 20/10/2026): celular 99, computador 100, acessibilidade 100.
 
-**Pendente:** telefone no rodapé. O lugar está marcado com um comentário no HTML.
+Rodapé: WhatsApp (34) 99945-9639 só como contato, ao lado do Instagram. Não é botão de conversão.
 
 ## Rodar local
 
