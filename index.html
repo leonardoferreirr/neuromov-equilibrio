@@ -14,7 +14,8 @@
 <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
 <link rel="icon" href="assets/img/favicon-64.png" type="image/png" sizes="64x64" />
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
-<link rel="preload" as="image" href="assets/img/julia-nicoly-960.webp" imagesrcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w" imagesizes="(min-width:1001px) 54vw, 100vw" fetchpriority="high" />
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="preload" as="image" href="assets/img/julia-nicoly-960.webp" imagesrcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w, assets/img/julia-nicoly-1920.webp 1920w" imagesizes="100vw" fetchpriority="high" />
 <link rel="preload" href="assets/fonts/poppins-light.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/poppins-regular.woff2" as="font" type="font/woff2" crossorigin />
 <style>
@@ -45,13 +46,15 @@
   --ink:#2A1A22;
   --muted:#6C5C64;
   --line:rgba(42,26,34,.12);
+  --line-strong:rgba(42,26,34,.22);
   --line-light:rgba(237,231,220,.16);
   --ease:cubic-bezier(.22,.61,.36,1);
   --wrap:1180px;
   --pad:clamp(1.25rem,4vw,2.5rem);
+  --top-h:66px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scroll-padding-top:70px}
 body{font-family:"Poppins","Poppins FB",Arial,sans-serif;font-weight:400;font-size:1rem;line-height:1.7;color:var(--ink);background:var(--ivory);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 img,video{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
@@ -62,7 +65,7 @@ button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--mauve);outline-offset:3px}
 
 /* ---------- botões ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7rem;white-space:nowrap;min-height:54px;padding:0 1.9rem;border-radius:999px;font-size:.9rem;font-weight:500;letter-spacing:.01em;transition:background .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),transform .35s var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7rem;white-space:nowrap;min-height:54px;padding:0 1.9rem;border-radius:999px;font-size:.9rem;font-weight:500;letter-spacing:.01em;transition:background .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease)}
 .btn svg{width:18px;height:18px;transition:transform .35s var(--ease)}
 .btn:hover svg{transform:translateX(3px)}
 .btn--cream{background:var(--cream);color:var(--plum-900)}
@@ -71,12 +74,13 @@ button,input{font:inherit;color:inherit}
 .btn--plum:hover{background:var(--plum-700)}
 .btn--ghost{border:1px solid var(--line-light);color:var(--cream)}
 .btn--ghost:hover{border-color:rgba(237,231,220,.5)}
+.cta-row{display:flex;justify-content:center;margin-top:clamp(2.5rem,5vw,3.5rem)}
 
 /* ---------- topo fixo ---------- */
-.top{position:fixed;inset:0 0 auto;z-index:50;transition:background .4s var(--ease),box-shadow .4s var(--ease),padding .4s var(--ease);padding:1.1rem 0}
-.top.is-solid{background:rgba(42,24,32,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line-light);padding:.7rem 0}
+.top{position:fixed;inset:0 0 auto;z-index:50;padding:1.1rem 0;transition:background .4s var(--ease),box-shadow .4s var(--ease),padding .4s var(--ease)}
+.top.is-solid{background:rgba(42,24,32,.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line-light);padding:.7rem 0}
 .top__in{display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
-.top__logo{color:var(--cream);display:block}
+.top__logo{color:var(--cream);display:block;transition:color .4s var(--ease)}
 .top__logo svg{--h:clamp(34px,3.6vw,42px);height:var(--h);width:calc(var(--h) * 2.567);display:block}
 .top__nav{display:flex;align-items:center;gap:2rem}
 .top__nav a:not(.btn){font-size:.84rem;color:rgba(237,231,220,.78);transition:color .3s}
@@ -85,7 +89,8 @@ button,input{font:inherit;color:inherit}
 
 /* ---------- hero ----------
    Celular: a foto das duas ocupa o topo e se desfaz no vinho; o título entra por cima do degradê.
-   Computador: a foto fica na metade direita, desfazendo para a esquerda. */
+   Computador: a foto vira o fundo inteiro da seção, presa pelo rosto delas, e o texto fica embaixo
+   num degradê que sobe do vinho. */
 .hero{position:relative;overflow:hidden;background:var(--plum-900);color:var(--cream)}
 .hero__media{position:relative;height:min(122vw,600px)}
 .hero__media img{width:100%;height:100%;object-fit:cover;object-position:50% 16%}
@@ -99,18 +104,6 @@ button,input{font:inherit;color:inherit}
 .hero__when span{color:var(--mauve-soft);margin:0 .55rem}
 .hero__ctas{margin-top:2rem;display:flex;flex-direction:column;gap:.7rem}
 .hero__ctas .btn{width:100%}
-@media (min-width:1001px){
-  .hero{min-height:min(100svh,900px);display:flex;align-items:center}
-  .hero__media{position:absolute;top:0;right:0;bottom:0;width:54%;height:auto}
-  .hero__media img{object-position:50% 22%}
-  .hero__media::after{background:linear-gradient(90deg,var(--plum-900) 0%,rgba(42,24,32,.55) 22%,rgba(42,24,32,0) 52%),linear-gradient(180deg,rgba(30,17,23,.5) 0%,rgba(30,17,23,0) 18%,rgba(30,17,23,0) 78%,rgba(42,24,32,.65) 100%)}
-  .hero__in{margin-top:0;padding:8rem var(--pad) 5.5rem;text-align:left}
-  .hero__copy{max-width:600px}
-  .hero__lead{margin-left:0}
-  .hero__ctas{flex-direction:row;flex-wrap:wrap;gap:.8rem}
-  .hero__ctas .btn{width:auto}
-  .hero__mark{left:-14%;bottom:-24%;width:min(980px,120vw)}
-}
 
 /* ---------- seções ---------- */
 .sec{padding:clamp(5rem,10vw,8.5rem) 0}
@@ -118,103 +111,105 @@ button,input{font:inherit;color:inherit}
 .p{color:var(--muted);font-size:1.02rem;line-height:1.8}
 .p + .p{margin-top:1.1rem}
 
-/* intro + vídeo */
-.intro__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:clamp(2.5rem,7vw,6.5rem);align-items:center}
-.intro .h2{max-width:20ch}
-.intro__q{margin-top:1.6rem;font-weight:300;font-size:clamp(1.15rem,1.7vw,1.4rem);line-height:1.5;color:var(--ink);max-width:32rem}
-.intro__txt{margin-top:2rem;max-width:36rem}
-.video{position:relative;aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:var(--plum-900);box-shadow:0 30px 60px -28px rgba(42,24,32,.45)}
+/* abertura + vídeo (celular: título, vídeo e texto, nessa ordem) */
+.intro{text-align:center}
+.intro__in{display:grid;grid-template-columns:1fr;grid-template-areas:"title" "video" "text";gap:2.2rem}
+.intro .h2{grid-area:title;font-size:1.68rem;line-height:1.18;text-wrap:balance;max-width:22rem;margin-inline:auto}
+.intro__txt{grid-area:text;max-width:36rem;margin-inline:auto}
+.video{grid-area:video;position:relative;width:min(100%,340px);margin:0 auto;aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:var(--plum-900);box-shadow:0 30px 60px -28px rgba(42,24,32,.45)}
 .video img,.video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.video__play{position:absolute;inset:0;display:grid;place-items:center;border:0;background:linear-gradient(180deg,rgba(30,17,23,0) 55%,rgba(30,17,23,.55));cursor:pointer}
+.video__play{position:absolute;inset:0;display:grid;place-items:center;border:0;background:linear-gradient(180deg,rgba(30,17,23,0) 55%,rgba(30,17,23,.45));cursor:pointer}
 .video__play i{width:78px;height:78px;border-radius:50%;background:rgba(237,231,220,.92);display:grid;place-items:center;transition:transform .4s var(--ease),background .4s}
 .video__play i::after{content:"";margin-left:5px;border-left:18px solid var(--plum-900);border-top:11px solid transparent;border-bottom:11px solid transparent}
 .video__play:hover i{transform:scale(1.06);background:#fff}
-.video__note{position:absolute;left:0;right:0;bottom:1.2rem;text-align:center;font-size:.82rem;color:var(--cream)}
-.video.is-playing .video__play,.video.is-playing .video__note{display:none}
+.video.is-playing .video__play{display:none}
 
-/* módulos: título fixo à esquerda e cartões empilhando à direita */
+/* módulos: o título fica parado e os cartões sobem um por cima do outro */
 .mods{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.mods__in{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(2.5rem,7vw,6rem);align-items:start}
-.mods__head{position:sticky;top:120px}
-.mods__head .p{margin-top:1.3rem;max-width:24rem}
-.mods__list{display:grid;gap:1.1rem;list-style:none}
-.mod{position:sticky;top:calc(118px + var(--i) * 16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.6rem;align-items:start;padding:clamp(1.6rem,3vw,2.2rem);background:var(--ivory);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 40px -30px rgba(42,24,32,.35)}
-.mod__n{font-size:clamp(2.3rem,3.6vw,3rem);line-height:.9;color:var(--mauve)}
-.mod h3{font-weight:400;font-size:clamp(1.12rem,1.7vw,1.32rem);line-height:1.35;letter-spacing:-.01em}
-.mod p{margin-top:.55rem;color:var(--muted);font-size:.97rem;line-height:1.7}
+.mods__in{display:grid;grid-template-columns:1fr;gap:1.2rem}
+.mods__head{position:sticky;top:var(--top-h);z-index:2;background:var(--paper);padding:1.1rem 0 1rem;text-align:center}
+.mods__head .p{display:none}
+.mods__list{display:grid;gap:1rem;list-style:none}
+.mod{position:sticky;top:calc(var(--top-h) + 76px + var(--i) * 14px);display:grid;grid-template-columns:1fr;gap:.7rem;padding:1.6rem 1.5rem 1.7rem;background:var(--ivory);border:1px solid var(--line);border-radius:24px;box-shadow:0 -10px 30px -22px rgba(42,24,32,.35)}
+.mod__n{font-size:2.3rem;line-height:.9;color:var(--mauve)}
+.mod h3{font-weight:400;font-size:1.15rem;line-height:1.35;letter-spacing:-.01em}
+.mod p{margin-top:.45rem;color:var(--muted);font-size:.97rem;line-height:1.7}
 
 /* objetivo */
-.goal{background:var(--plum-900);color:var(--cream);text-align:center;position:relative;overflow:hidden}
-.goal__txt{max-width:30em;margin:0 auto;font-weight:300;font-size:clamp(1.45rem,2.9vw,2.35rem);line-height:1.38;letter-spacing:-.02em}
+.goal{background:var(--plum-900);color:var(--cream);text-align:center}
+.goal__txt{max-width:30em;margin:0 auto;font-weight:300;font-size:clamp(1.4rem,2.9vw,2.35rem);line-height:1.38;letter-spacing:-.02em}
 .goal__txt .it{color:var(--mauve-soft)}
-.goal__for{margin-top:2.2rem;font-size:.98rem;color:rgba(237,231,220,.72)}
+.goal__for{margin-top:2rem;font-size:.98rem;color:rgba(237,231,220,.72)}
 
-/* professoras */
+/* professoras: recortadas, em pé sobre uma linha */
 .team .h2{text-align:center}
-.team__grid{margin-top:clamp(2.8rem,5vw,4rem);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,4vw,3rem);max-width:980px;margin-inline:auto}
-.prof{display:grid;gap:1.6rem}
-.prof__photo{aspect-ratio:4/5;border-radius:999px 999px 24px 24px;overflow:hidden;background:var(--plum-800)}
-.prof__photo img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
-.prof h3{font-size:clamp(1.8rem,2.6vw,2.2rem);line-height:1.1;color:var(--plum-900)}
+.team__grid{margin-top:clamp(2.6rem,5vw,4rem);display:grid;grid-template-columns:1fr;gap:3.5rem;max-width:980px;margin-inline:auto;align-items:start}
+.prof{text-align:center}
+.prof__fig{height:clamp(380px,108vw,460px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:center;align-items:flex-end}
+.prof__fig img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom}
+.prof h3{margin-top:1.6rem;font-size:clamp(1.85rem,2.6vw,2.2rem);line-height:1.1;color:var(--plum-900)}
 .prof ul{list-style:none;margin-top:1rem}
 .prof li{padding:.8rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.97rem;line-height:1.6}
 .prof li:last-child{border-bottom:1px solid var(--line)}
 
 /* informações */
 .info{background:var(--cream-2)}
-.info .h2{max-width:16ch}
-.info__grid{margin-top:clamp(2.6rem,5vw,3.6rem);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(1.5rem,4vw,3rem);align-items:stretch}
-.price{background:var(--plum-900);color:var(--cream);border-radius:28px;padding:clamp(2rem,4vw,2.8rem);display:flex;flex-direction:column}
+.info .h2{text-align:center}
+.info__grid{margin-top:clamp(2.6rem,5vw,3.6rem);display:grid;grid-template-columns:1fr;gap:1.5rem}
+.price{background:var(--plum-900);color:var(--cream);border-radius:28px;padding:clamp(2rem,4vw,2.8rem);display:flex;flex-direction:column;align-items:center;text-align:center}
 .price h3{font-weight:400;font-size:1rem;color:var(--mauve-soft)}
 .price__v{margin-top:.8rem;font-weight:300;font-size:clamp(3rem,6vw,4.2rem);line-height:1;letter-spacing:-.04em}
 .price__v small{font-size:.38em;letter-spacing:0;margin-left:.3rem;color:var(--mauve-soft)}
 .price__lot{margin-top:.9rem;font-size:1rem}
 .price__split{margin-top:.35rem;font-size:.95rem;color:rgba(237,231,220,.72)}
-.price .btn{margin-top:auto;align-self:flex-start}
-.price__sp{flex:1;min-height:2rem}
+.price__sp{flex:1;min-height:1.8rem}
+.price .btn{align-self:stretch}
 .facts{display:grid;align-content:start}
-.fact{display:grid;grid-template-columns:9.5rem minmax(0,1fr);gap:1.5rem;padding:1.35rem 0;border-top:1px solid var(--line)}
+.fact{display:grid;grid-template-columns:1fr;gap:.35rem;padding:1.3rem 0;border-top:1px solid var(--line);text-align:center}
 .fact:last-child{border-bottom:1px solid var(--line)}
 .fact dt{font-weight:500;font-size:.92rem;color:var(--plum-900)}
 .fact dd{color:var(--muted);font-size:.98rem;line-height:1.65}
 .fact dd a{color:var(--plum-900);border-bottom:1px solid currentColor;padding-bottom:1px;white-space:nowrap}
 
 /* inscrição */
-.join{background:var(--plum-900);color:var(--cream);position:relative;overflow:hidden}
-.join__in{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(2.5rem,6vw,5.5rem);align-items:start}
-.join__head{position:sticky;top:120px}
-.join__head .p{color:rgba(237,231,220,.74);margin-top:1.3rem;max-width:26rem}
-.form{background:var(--paper);color:var(--ink);border-radius:28px;padding:clamp(1.6rem,4vw,2.6rem);display:grid;gap:1.35rem;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)}
+.join{background:var(--plum-900);color:var(--cream)}
+.join__head{text-align:center;max-width:44rem;margin:0 auto}
+.join__head .p{color:rgba(237,231,220,.74);margin-top:1.2rem;text-wrap:balance}
+.form{margin:clamp(2.2rem,4vw,3rem) auto 0;max-width:1000px;background:var(--paper);color:var(--ink);border-radius:28px;padding:clamp(1.5rem,4vw,2.4rem);display:grid;gap:1.3rem;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)}
+.form__cols{display:grid;grid-template-columns:1fr;gap:1.3rem}
+.form__col{display:grid;gap:1.3rem;align-content:start}
 .f label,.f legend{display:block;font-weight:500;font-size:.84rem;margin-bottom:.5rem;color:var(--plum-900)}
 .f input[type=text],.f input[type=email],.f input[type=tel]{width:100%;height:54px;padding:0 1.05rem;border:1px solid var(--line);border-radius:14px;background:#fff;font-size:1rem;transition:border-color .25s,box-shadow .25s}
 .f input:focus{outline:0;border-color:var(--mauve);box-shadow:0 0 0 4px rgba(140,110,124,.14)}
 fieldset.f{border:0;padding:0;margin:0;min-width:0}
-.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.opts{display:grid;grid-template-columns:1fr;gap:.6rem}
 .opt{position:relative}
 .opt input{position:absolute;opacity:0;pointer-events:none}
-.opt span{display:flex;align-items:center;gap:.75rem;min-height:56px;padding:.7rem 1rem;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;font-size:.93rem;line-height:1.35;transition:border-color .25s,background .25s}
+.opt span{display:flex;align-items:center;gap:.75rem;min-height:54px;padding:.65rem 1rem;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;font-size:.93rem;line-height:1.35;transition:border-color .25s,background .25s}
 .opt span::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--mauve-soft);transition:border .25s}
 .opt input:checked + span{border-color:var(--plum-900);background:var(--cream-2)}
 .opt input:checked + span::before{border:5.5px solid var(--plum-900)}
 .opt input:focus-visible + span{outline:2px solid var(--mauve);outline-offset:2px}
-.pay-box{display:none;border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.2rem 1.3rem;background:var(--cream-2)}
+.pay-box{display:none;border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.1rem 1.2rem;background:var(--cream-2)}
 .pay-box.is-on{display:block}
 .pix{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .pix small{display:block;font-size:.78rem;color:var(--muted)}
 .pix b{font-weight:500;font-size:1.05rem;letter-spacing:.01em}
-.pix button{border:1px solid var(--plum-900);background:transparent;border-radius:999px;padding:.55rem 1.1rem;font-size:.82rem;font-weight:500;cursor:pointer;transition:background .25s,color .25s}
+.pix button{border:1px solid var(--plum-900);background:transparent;border-radius:999px;padding:.5rem 1.05rem;font-size:.82rem;font-weight:500;cursor:pointer;transition:background .25s,color .25s}
 .pix button:hover,.pix button.is-done{background:var(--plum-900);color:var(--cream)}
 .pay-box p{font-size:.92rem;color:var(--muted);line-height:1.6}
-.pay-box .f{margin-top:1.1rem}
-.file{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border:1px dashed var(--mauve-soft);border-radius:14px;background:#fff;cursor:pointer;transition:border-color .25s}
+.pay-box .f{margin-top:1rem}
+.file{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;border:1px dashed var(--mauve-soft);border-radius:14px;background:#fff;cursor:pointer;transition:border-color .25s}
 .file:hover{border-color:var(--plum-900)}
 .file svg{flex:none;width:22px;height:22px;color:var(--plum-900)}
 .file span{font-size:.92rem;color:var(--muted);line-height:1.4;overflow:hidden;text-overflow:ellipsis}
 .file input{position:absolute;width:1px;height:1px;opacity:0}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.form .btn{width:100%;min-height:58px;font-size:.95rem}
+.form__end{display:grid;gap:.9rem}
+.form .btn{width:100%;min-height:56px;font-size:.95rem}
 .form .btn[disabled]{opacity:.6;cursor:progress}
-.form__msg{font-size:.9rem;line-height:1.55;color:#9B2C3C;min-height:0}
+.form__msg{font-size:.9rem;line-height:1.55;color:#9B2C3C;text-align:center}
+.form__msg:empty{display:none}
 .form__fine{font-size:.8rem;color:var(--muted);text-align:center;line-height:1.5}
 .done{display:none;text-align:center;padding:clamp(2rem,5vw,3rem) 1rem}
 .done.is-on{display:block}
@@ -222,57 +217,120 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 .done h3{font-weight:300;font-size:clamp(1.6rem,3vw,2rem);letter-spacing:-.02em;line-height:1.2}
 .done p{margin-top:1rem;color:var(--muted);line-height:1.7}
 
-.cta-row{display:flex;justify-content:center;margin-top:clamp(2.5rem,5vw,3.5rem)}
-
 /* barra fixa com preço e botão, só no celular */
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem var(--pad) calc(.75rem + env(safe-area-inset-bottom));background:rgba(30,17,23,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line-light);color:var(--cream);transform:translateY(110%);transition:transform .45s var(--ease)}
 .bar.is-on{transform:none}
 .bar p{display:grid;line-height:1.25}
 .bar b{font-weight:500;font-size:1.05rem}
 .bar span{font-size:.75rem;color:var(--mauve-soft)}
-.bar .btn{min-height:46px;padding:0 1.3rem;font-size:.85rem}
+.bar .btn{min-height:46px;padding:0 1.2rem;font-size:.84rem}
 
 /* rodapé */
-.foot{background:var(--plum-950);color:rgba(237,231,220,.7);padding:clamp(3.5rem,7vw,5rem) 0 2.2rem;font-size:.9rem}
-.foot__in{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:2rem}
-.foot__logo{color:var(--cream)}
+.foot{background:var(--plum-950);color:rgba(237,231,220,.7);padding:clamp(3.5rem,7vw,5rem) 0 2.2rem;font-size:.9rem;text-align:center}
+.foot__grid{display:grid;grid-template-columns:1fr;gap:2.4rem;justify-items:center}
+.foot__logo{color:var(--cream);display:inline-block}
 .foot__logo svg{height:52px;width:134px;display:block}
-.foot address{font-style:normal;line-height:1.75;margin-top:1.3rem}
-.foot__ig{display:inline-flex;align-items:center;gap:.6rem;color:var(--cream);transition:opacity .3s}
-.foot__ig:hover{opacity:.75}
-.foot__ig svg{width:20px;height:20px}
-.foot__bot{margin-top:2.6rem;padding-top:1.5rem;border-top:1px solid var(--line-light);font-size:.8rem;color:rgba(237,231,220,.5)}
+.foot__course{margin-top:1.1rem;line-height:1.7}
+.foot__h{font-weight:500;font-size:.86rem;color:var(--cream);margin-bottom:.8rem}
+.foot__links{display:grid;gap:.45rem}
+.foot__links a,.foot__contact a{transition:color .3s}
+.foot__links a:hover,.foot__contact a:hover{color:var(--cream)}
+.foot__contact{display:grid;gap:.55rem;font-style:normal;line-height:1.6}
+.foot__ig{display:inline-flex;align-items:center;gap:.55rem;justify-content:center}
+.foot__ig svg{width:18px;height:18px}
+.foot__map{border-bottom:1px solid currentColor;justify-self:center;padding-bottom:1px}
+.foot__bot{margin-top:2.8rem;padding-top:1.5rem;border-top:1px solid var(--line-light);font-size:.8rem;color:rgba(237,231,220,.5)}
 
 /* entrada suave: só esconde se o JS estiver rodando */
 .js .rv{opacity:0;transform:translateY(16px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--d,0) * 90ms)}
 .js .rv.in{opacity:1;transform:none}
 
 @media (max-width:1000px){
-  .bar{display:flex}
   .top__nav a:not(.btn){display:none}
-  .intro__in,.mods__in,.info__grid,.join__in{grid-template-columns:1fr}
-  .intro{text-align:center}
-  .intro .h2,.intro__q,.intro__txt{margin-inline:auto}
-  .video{width:min(100%,340px);margin:0 auto}
-  .mods__head,.join__head{position:static;text-align:center}
-  .mods__head .p,.join__head .p{margin-inline:auto}
-  .mod{position:relative;top:auto}
-  .info .h2{margin-inline:auto;text-align:center}
+  .bar{display:flex}
 }
 @media (max-width:640px){
+  :root{--top-h:62px}
   .top{padding:.8rem 0}
   .top .btn{padding:0 1.1rem}
-  .hero__when span{display:block;height:0;overflow:hidden;margin:0}
-  .team__grid{grid-template-columns:1fr;max-width:420px}
-  .prof{text-align:center}
-  .mod{grid-template-columns:1fr;gap:.8rem;text-align:left}
-  .fact{grid-template-columns:1fr;gap:.35rem;text-align:center}
-  .price{text-align:center;align-items:center}
-  .price .btn{align-self:stretch}
-  .opts{grid-template-columns:1fr}
-  .foot__in{flex-direction:column;align-items:center;text-align:center}
-  .foot__bot{text-align:center}
 }
+
+/* ================= computador ================= */
+@media (min-width:1001px){
+  /* topo: logo e menu escuros sobre a foto clara; ao rolar, o fundo vira vinho e tudo fica creme */
+  .top:not(.is-solid) .top__logo{color:var(--plum-900)}
+  .top:not(.is-solid) .top__nav a:not(.btn){color:rgba(42,24,32,.78)}
+  .top:not(.is-solid) .top__nav a:not(.btn):hover{color:var(--plum-900)}
+  .top:not(.is-solid) .btn--cream{background:var(--plum-900);color:var(--cream)}
+  .top:not(.is-solid) .btn--cream:hover{background:var(--plum-700)}
+
+  /* hero: foto de fundo inteira. A imagem é presa pelo topo (começa logo acima do cabelo delas),
+     e a seção cresce o necessário para o texto nunca encostar no rosto. */
+  .hero{--t:330px;min-height:max(100svh,calc(32.5vw + var(--t) + 24px));display:flex;align-items:flex-end}
+  .hero__media{position:absolute;inset:0;height:auto}
+  .hero__media img{position:absolute;left:0;top:-16.25vw;width:100%;height:auto;object-fit:initial}
+  .hero__media::after{background:linear-gradient(0deg,var(--plum-900) 0,rgba(42,24,32,.93) calc(var(--t) * .55),rgba(42,24,32,.5) var(--t),rgba(42,24,32,0) calc(var(--t) + 120px))}
+  .hero__media::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(42,24,32,.38) 0,rgba(42,24,32,0) 16%,rgba(42,24,32,0) 80%,rgba(42,24,32,.6) 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 38%);mask-image:linear-gradient(180deg,transparent 0,#000 38%)}
+  .hero__mark{display:none}
+  .hero__in{margin-top:0;padding-top:0;padding-bottom:3rem}
+  .hero__copy{max-width:none}
+  .hero h1{white-space:nowrap;font-size:clamp(2.9rem,4.6vw,4.7rem);line-height:1.05}
+  .hero h1 .sub{white-space:nowrap;margin-top:.6rem;font-size:clamp(1.1rem,1.5vw,1.4rem)}
+  .hero__lead{margin-top:1rem;max-width:50rem;font-size:1rem;line-height:1.65;text-wrap:balance}
+  .hero__when{margin-top:.8rem;font-size:.92rem}
+  .hero__ctas{margin-top:1.5rem;flex-direction:row;justify-content:center;gap:.8rem}
+  .hero__ctas .btn{width:auto}
+
+  /* abertura: título em até 3 linhas, texto do tamanho do vídeo */
+  .intro{text-align:left}
+  .intro__in{grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"title video" "text video";column-gap:clamp(4rem,8vw,7rem);row-gap:2rem}
+  .intro .h2{align-self:start;max-width:19em;margin:0;font-size:clamp(1.9rem,2.5vw,2.35rem);line-height:1.15}
+  .intro__txt{align-self:end;margin:0;max-width:38rem}
+  .intro__txt .p{font-size:1.1rem;line-height:1.85}
+  .video{width:300px;margin:0}
+
+  /* módulos */
+  .mods__in{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(2.5rem,7vw,6rem);align-items:start}
+  .mods__head{top:120px;background:none;padding:0;text-align:left}
+  .mods__head .p{display:block;margin-top:1.3rem;max-width:24rem}
+  .mods__list{gap:1.1rem}
+  .mod{top:calc(118px + var(--i) * 16px);grid-template-columns:auto minmax(0,1fr);gap:1.6rem;align-items:start;padding:2.2rem;box-shadow:0 18px 40px -30px rgba(42,24,32,.35)}
+  .mod__n{font-size:3rem}
+  .mod h3{font-size:1.3rem}
+
+  /* professoras lado a lado; nome e formação começam na mesma altura */
+  .team__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4rem}
+  .prof{text-align:left}
+  .prof__fig{height:500px}
+
+  /* informações */
+  .info .h2{white-space:nowrap}
+  .info__grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:3rem;align-items:stretch}
+  .price{align-items:flex-start;text-align:left}
+  .price .btn{align-self:flex-start}
+  .fact{grid-template-columns:9.5rem minmax(0,1fr);gap:1.5rem;text-align:left}
+
+  /* inscrição: cabeçalho centralizado e o formulário em duas colunas, no mesmo quadro */
+  .join{padding:clamp(4.5rem,7vw,6rem) 0}
+  .join__head{max-width:56rem}
+  .join__head .p{max-width:52rem;margin-inline:auto}
+  .form{padding:2rem 2.4rem 2.2rem;gap:1.2rem}
+  .form__cols{grid-template-columns:1fr 1fr;gap:2.4rem}
+  .form__col{gap:1.1rem}
+  .f input[type=text],.f input[type=email],.f input[type=tel]{height:50px}
+  .opts{grid-template-columns:1fr 1fr}
+  .opt span{min-height:50px;padding:.55rem .9rem;font-size:.9rem}
+  .form__end{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:1.2rem 2.4rem}
+  .form__end .form__msg{grid-column:1/-1}
+  .form__fine{text-align:left}
+
+  /* rodapé em colunas */
+  .foot{text-align:left}
+  .foot__grid{grid-template-columns:1.3fr 1fr 1.2fr auto;justify-items:start;align-items:start;gap:3rem}
+  .foot__ig{justify-content:flex-start}
+  .foot__map{justify-self:start}
+}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .rv{opacity:1;transform:none;transition:none}
@@ -295,7 +353,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
       <a href="#modulos">Módulos</a>
       <a href="#professoras">Professoras</a>
       <a href="#informacoes">Informações</a>
-      <a class="btn btn--cream" href="#inscricao">Inscreva-se</a>
+      <a class="btn btn--cream" href="#inscricao">Garantir minha vaga</a>
     </nav>
   </div>
 </header>
@@ -304,7 +362,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   <!-- HERO -->
   <section class="hero" id="inicio">
     <div class="hero__media">
-      <img src="assets/img/julia-nicoly-960.webp" srcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w" sizes="(min-width:1001px) 54vw, 100vw" width="1200" height="1559" alt="Júlia Faria e Nicoly Alves, fisioterapeutas da Neuromov e professoras do curso" fetchpriority="high" />
+      <img src="assets/img/julia-nicoly-960.webp" srcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w, assets/img/julia-nicoly-1920.webp 1920w" sizes="100vw" width="1200" height="1559" alt="Júlia Faria e Nicoly Alves, fisioterapeutas da Neuromov e professoras do curso" fetchpriority="high" />
     </div>
     <svg class="hero__mark" viewBox="160 672 830 656" aria-hidden="true"><use href="#logo"/></svg>
     <div class="wrap hero__in">
@@ -323,18 +381,14 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   <!-- O CURSO -->
   <section class="sec intro" id="curso">
     <div class="wrap intro__in">
-      <div>
-        <h2 class="h2 rv">Você sabe identificar quais componentes do equilíbrio estão comprometidos no seu paciente?</h2>
-        <p class="intro__q rv" style="--d:1">E, principalmente, como transformar os resultados da avaliação em estratégias de tratamento?</p>
-        <div class="intro__txt">
-          <p class="p rv" style="--d:2">Pensando em aproximar a teoria da prática, a Neuromov preparou um curso presencial, com abordagem teórico-prática, voltado para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar seu raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
-          <p class="p rv" style="--d:3">A proposta é sair da ideia de apenas aplicar testes e escalas para entender os sistemas envolvidos no equilíbrio, construir uma avaliação direcionada para cada paciente idoso ou neurológico e transformar os achados clínicos em estratégias de tratamento.</p>
-        </div>
-      </div>
-      <div class="video rv" id="video" style="--d:2">
+      <h2 class="h2 rv">Você sabe identificar quais componentes do equilíbrio estão comprometidos no seu paciente?</h2>
+      <div class="video rv" id="video" style="--d:1">
         <img src="assets/img/video-poster.webp" width="540" height="960" loading="lazy" decoding="async" alt="" />
         <button class="video__play" type="button" aria-label="Assistir ao vídeo de apresentação do curso"><i></i></button>
-        <p class="video__note">Júlia e Nicoly apresentam o curso</p>
+      </div>
+      <div class="intro__txt">
+        <p class="p rv" style="--d:1">Pensando em aproximar a teoria da prática, a Neuromov preparou um curso presencial, com abordagem teórico-prática, voltado para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar seu raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
+        <p class="p rv" style="--d:2">A proposta é sair da ideia de apenas aplicar testes e escalas para entender os sistemas envolvidos no equilíbrio, construir uma avaliação direcionada para cada paciente idoso ou neurológico e transformar os achados clínicos em estratégias de tratamento.</p>
       </div>
     </div>
   </section>
@@ -343,15 +397,15 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   <section class="sec mods" id="modulos">
     <div class="wrap mods__in">
       <div class="mods__head">
-        <h2 class="h2 rv">O que vamos abordar</h2>
-        <p class="p rv" style="--d:1">Cinco módulos que vão do controle postural à reabilitação na prática, sempre ligando a avaliação ao raciocínio clínico.</p>
+        <h2 class="h2">O que vamos abordar</h2>
+        <p class="p">Cinco módulos que vão do controle postural à reabilitação na prática, sempre ligando a avaliação ao raciocínio clínico.</p>
       </div>
       <ol class="mods__list">
-        <li class="mod rv" style="--i:0"><span class="mod__n it">01</span><div><h3>Controle motor e equilíbrio</h3><p>Compreendendo os mecanismos envolvidos no controle postural.</p></div></li>
-        <li class="mod rv" style="--i:1"><span class="mod__n it">02</span><div><h3>O equilíbrio na perspectiva da CIF</h3><p>Relacionando as alterações do equilíbrio com a funcionalidade, as atividades e a participação.</p></div></li>
-        <li class="mod rv" style="--i:2"><span class="mod__n it">03</span><div><h3>Avaliação dos componentes do equilíbrio</h3><p>Estático, dinâmico, antecipatório e reativo.</p></div></li>
-        <li class="mod rv" style="--i:3"><span class="mod__n it">04</span><div><h3>Como conduzir uma avaliação</h3><p>Da escolha dos instrumentos à interpretação dos resultados e construção do raciocínio clínico.</p></div></li>
-        <li class="mod rv" style="--i:4"><span class="mod__n it">05</span><div><h3>Reabilitação na prática</h3><p>Estratégias e exercícios para trabalhar os diferentes componentes do equilíbrio.</p></div></li>
+        <li class="mod" style="--i:0"><span class="mod__n it">01</span><div><h3>Controle motor e equilíbrio</h3><p>Compreendendo os mecanismos envolvidos no controle postural.</p></div></li>
+        <li class="mod" style="--i:1"><span class="mod__n it">02</span><div><h3>O equilíbrio na perspectiva da CIF</h3><p>Relacionando as alterações do equilíbrio com a funcionalidade, as atividades e a participação.</p></div></li>
+        <li class="mod" style="--i:2"><span class="mod__n it">03</span><div><h3>Avaliação dos componentes do equilíbrio</h3><p>Estático, dinâmico, antecipatório e reativo.</p></div></li>
+        <li class="mod" style="--i:3"><span class="mod__n it">04</span><div><h3>Como conduzir uma avaliação</h3><p>Da escolha dos instrumentos à interpretação dos resultados e construção do raciocínio clínico.</p></div></li>
+        <li class="mod" style="--i:4"><span class="mod__n it">05</span><div><h3>Reabilitação na prática</h3><p>Estratégias e exercícios para trabalhar os diferentes componentes do equilíbrio.</p></div></li>
       </ol>
     </div>
     <div class="wrap cta-row rv"><a class="btn btn--plum" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
@@ -362,6 +416,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
     <div class="wrap">
       <p class="goal__txt rv">Nosso objetivo é que você aprenda não apenas a aplicar testes ou exercícios, mas a compreender <span class="it">o que</span> está avaliando, <span class="it">por que</span> está avaliando e <span class="it">como</span> utilizar essas informações para direcionar suas intervenções.</p>
       <p class="goal__for rv" style="--d:1">Para estudantes de Fisioterapia e fisioterapeutas, com foco em pacientes idosos e neurológicos.</p>
+      <div class="cta-row rv" style="--d:2"><a class="btn btn--cream" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
     </div>
   </section>
 
@@ -371,30 +426,26 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
       <h2 class="h2 rv">Quem conduz o curso</h2>
       <div class="team__grid">
         <article class="prof rv">
-          <div class="prof__photo"><img src="assets/img/julia-faria.webp" width="640" height="800" loading="lazy" decoding="async" alt="Júlia Faria" /></div>
-          <div>
-            <h3 class="it">Júlia Faria</h3>
-            <ul>
-              <li>Fisioterapeuta pela UFU</li>
-              <li>Especialista em Envelhecimento pela UFSCar</li>
-              <li>Mestre em Fisioterapia com foco em pacientes com Doença de Parkinson e AVC pela UFU</li>
-              <li>Doutora em Reabilitação e Desempenho Funcional pela USP</li>
-            </ul>
-          </div>
+          <div class="prof__fig"><img src="assets/img/julia-recorte.webp" width="560" height="999" loading="lazy" decoding="async" alt="Júlia Faria" /></div>
+          <h3 class="it">Júlia Faria</h3>
+          <ul>
+            <li>Fisioterapeuta pela UFU</li>
+            <li>Especialista em Envelhecimento pela UFSCar</li>
+            <li>Mestre em Fisioterapia com foco em pacientes com Doença de Parkinson e AVC pela UFU</li>
+            <li>Doutora em Reabilitação e Desempenho Funcional pela USP</li>
+          </ul>
         </article>
         <article class="prof rv" style="--d:1">
-          <div class="prof__photo"><img src="assets/img/nicoly-alves.webp" width="640" height="800" loading="lazy" decoding="async" alt="Nicoly Alves" /></div>
-          <div>
-            <h3 class="it">Nicoly Alves</h3>
-            <ul>
-              <li>Fisioterapeuta pela UFU</li>
-              <li>Mestre em Fisioterapia com ênfase em Avaliação e Intervenção Neurofuncional pela UFTM</li>
-              <li>Neuromoduladora pela Rede Napen</li>
-            </ul>
-          </div>
+          <div class="prof__fig"><img src="assets/img/nicoly-recorte.webp" width="560" height="999" loading="lazy" decoding="async" alt="Nicoly Alves" /></div>
+          <h3 class="it">Nicoly Alves</h3>
+          <ul>
+            <li>Fisioterapeuta pela UFU</li>
+            <li>Mestre em Fisioterapia com ênfase em Avaliação e Intervenção Neurofuncional pela UFTM</li>
+            <li>Neuromoduladora pela Rede Napen</li>
+          </ul>
         </article>
       </div>
-      <div class="cta-row rv"><a class="btn btn--plum" href="#inscricao">Quero me inscrever <svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
+      <div class="cta-row rv"><a class="btn btn--plum" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
     </div>
   </section>
 
@@ -424,58 +475,64 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
   <!-- INSCRIÇÃO -->
   <section class="sec join" id="inscricao">
-    <div class="wrap join__in">
+    <div class="wrap">
       <div class="join__head">
         <h2 class="h2 rv">Garanta sua vaga</h2>
         <p class="p rv" style="--d:1">Preencha seus dados e escolha a forma de pagamento. No Pix, envie o comprovante junto com a inscrição. No cartão, entraremos em contato com o link de pagamento.</p>
       </div>
-      <div class="rv" style="--d:1">
-        <form class="form" id="form" novalidate>
-          <div class="f"><label for="nome">Nome completo</label><input id="nome" name="nome" type="text" autocomplete="name" required /></div>
-          <div class="f"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required /></div>
-          <div class="f"><label for="telefone">Telefone para contato</label><input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(34) 99999-9999" required /></div>
-          <fieldset class="f">
-            <legend>Escolaridade</legend>
-            <div class="opts">
-              <label class="opt"><input type="radio" name="escolaridade" value="Estudante de Fisioterapia" required /><span>Estudante de Fisioterapia</span></label>
-              <label class="opt"><input type="radio" name="escolaridade" value="Fisioterapeuta" /><span>Fisioterapeuta</span></label>
+      <form class="form rv" id="form" novalidate style="--d:1">
+        <div class="form__cols">
+          <div class="form__col">
+            <div class="f"><label for="nome">Nome completo</label><input id="nome" name="nome" type="text" autocomplete="name" required /></div>
+            <div class="f"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required /></div>
+            <div class="f"><label for="telefone">Telefone para contato</label><input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(34) 99999-9999" required /></div>
+          </div>
+          <div class="form__col">
+            <fieldset class="f">
+              <legend>Escolaridade</legend>
+              <div class="opts">
+                <label class="opt"><input type="radio" name="escolaridade" value="Estudante de Fisioterapia" required /><span>Estudante de Fisioterapia</span></label>
+                <label class="opt"><input type="radio" name="escolaridade" value="Fisioterapeuta" /><span>Fisioterapeuta</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="f">
+              <legend>Forma de pagamento</legend>
+              <div class="opts">
+                <label class="opt"><input type="radio" name="pagamento" value="Pix" required /><span>Pix</span></label>
+                <label class="opt"><input type="radio" name="pagamento" value="Cartão de crédito (até 4x com juros)" /><span>Cartão de crédito (até 4x com juros)</span></label>
+              </div>
+            </fieldset>
+            <div class="pay-box" id="boxPix">
+              <div class="pix">
+                <div><small>Chave Pix (CNPJ)</small><b>62.933.878/0001-37</b></div>
+                <button type="button" id="copyPix" data-key="62933878000137">Copiar chave</button>
+              </div>
+              <div class="f">
+                <label for="comprovante">Comprovante de pagamento Pix</label>
+                <label class="file" for="comprovante">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0-4 4m4-4 4 4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="fileName">Anexar imagem ou PDF do comprovante</span>
+                  <input id="comprovante" name="comprovante" type="file" accept="image/*,application/pdf" />
+                </label>
+              </div>
             </div>
-          </fieldset>
-          <fieldset class="f">
-            <legend>Forma de pagamento</legend>
-            <div class="opts">
-              <label class="opt"><input type="radio" name="pagamento" value="Pix" required /><span>Pix</span></label>
-              <label class="opt"><input type="radio" name="pagamento" value="Cartão de crédito (até 4x com juros)" /><span>Cartão de crédito (até 4x com juros)</span></label>
-            </div>
-          </fieldset>
-          <div class="pay-box" id="boxPix">
-            <div class="pix">
-              <div><small>Chave Pix (CNPJ)</small><b>62.933.878/0001-37</b></div>
-              <button type="button" id="copyPix" data-key="62933878000137">Copiar chave</button>
-            </div>
-            <div class="f">
-              <label for="comprovante">Comprovante de pagamento Pix</label>
-              <label class="file" for="comprovante">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0-4 4m4-4 4 4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span id="fileName">Anexar imagem ou PDF do comprovante</span>
-                <input id="comprovante" name="comprovante" type="file" accept="image/*,application/pdf" />
-              </label>
+            <div class="pay-box" id="boxCard">
+              <p>Entraremos em contato com o link de pagamento no cartão, em até 4x com juros.</p>
             </div>
           </div>
-          <div class="pay-box" id="boxCard">
-            <p>Entraremos em contato com o link de pagamento no cartão, em até 4x com juros.</p>
-          </div>
-          <div class="hp" aria-hidden="true"><label for="site">Site</label><input id="site" name="site" type="text" tabindex="-1" autocomplete="off" /></div>
-          <p class="form__msg" id="msg" role="alert"></p>
-          <button class="btn btn--plum" type="submit" id="send">Enviar inscrição <svg aria-hidden="true"><use href="#arrow"/></svg></button>
-          <p class="form__fine">Seus dados são usados apenas para a inscrição e o contato sobre o curso.</p>
-        </form>
-        <div class="form done" id="done" role="status">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m7.5 12.3 3 3 6-6.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h3>Inscrição recebida</h3>
-          <p>Obrigada! Em breve entraremos em contato para confirmar sua vaga.</p>
-          <p>Esperamos você para dois dias de muito aprendizado, troca de experiências e prática clínica!</p>
         </div>
+        <div class="hp" aria-hidden="true"><label for="site">Site</label><input id="site" name="site" type="text" tabindex="-1" autocomplete="off" /></div>
+        <div class="form__end">
+          <p class="form__msg" id="msg" role="alert"></p>
+          <p class="form__fine">Seus dados são usados apenas para a inscrição e o contato sobre o curso.</p>
+          <button class="btn btn--plum" type="submit" id="send">Enviar inscrição <svg aria-hidden="true"><use href="#arrow"/></svg></button>
+        </div>
+      </form>
+      <div class="form done" id="done" role="status">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m7.5 12.3 3 3 6-6.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Inscrição recebida</h3>
+        <p>Obrigada! Em breve entraremos em contato para confirmar sua vaga.</p>
+        <p>Esperamos você para dois dias de muito aprendizado, troca de experiências e prática clínica!</p>
       </div>
     </div>
   </section>
@@ -483,20 +540,33 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
 <div class="bar" id="bar" aria-hidden="true">
   <p><b>R$ 300,00</b><span>1º lote · vagas limitadas</span></p>
-  <a class="btn btn--cream" href="#inscricao" tabindex="-1">Garantir vaga</a>
+  <a class="btn btn--cream" href="#inscricao" tabindex="-1">Garantir minha vaga</a>
 </div>
 
 <footer class="foot">
   <div class="wrap">
-    <div class="foot__in">
+    <div class="foot__grid">
       <div>
         <a class="foot__logo" href="#inicio" aria-label="Neuromov, início"><svg role="img" aria-hidden="true"><use href="#logo"/></svg></a>
-        <address>Av. Cesário Alvim, 29, Centro<br/>Uberlândia/MG</address>
+        <p class="foot__course">Equilíbrio na Prática Clínica<br/>28 e 29 de novembro de 2026</p>
       </div>
-      <a class="foot__ig" href="https://www.instagram.com/neuromov.fisio/" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>
-        @neuromov.fisio
-      </a>
+      <nav aria-label="Rodapé">
+        <p class="foot__h">O curso</p>
+        <div class="foot__links">
+          <a href="#curso">Sobre o curso</a>
+          <a href="#modulos">Módulos</a>
+          <a href="#professoras">Professoras</a>
+          <a href="#informacoes">Datas, local e investimento</a>
+        </div>
+      </nav>
+      <address class="foot__contact">
+        <p class="foot__h">Contato</p>
+        <!-- telefone: entra aqui quando o número for confirmado -->
+        <a class="foot__ig" href="https://www.instagram.com/neuromov.fisio/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>@neuromov.fisio</a>
+        <span>Av. Cesário Alvim, 29, Centro<br/>Uberlândia/MG</span>
+        <a class="foot__map" href="https://www.google.com/maps/search/?api=1&amp;query=Av.+Ces%C3%A1rio+Alvim%2C+29%2C+Centro%2C+Uberl%C3%A2ndia+MG" target="_blank" rel="noopener">Ver no mapa</a>
+      </address>
+      <a class="btn btn--cream" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#arrow"/></svg></a>
     </div>
     <p class="foot__bot">© <span id="yr">2026</span> Neuromov · Equilíbrio na Prática Clínica: avaliação, raciocínio clínico e reabilitação</p>
   </div>
@@ -507,7 +577,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* topo ganha fundo depois do hero */
+  /* topo ganha fundo depois do começo da página */
   var top = $('#top');
   var onScroll = function () { top.classList.toggle('is-solid', scrollY > 40); };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
