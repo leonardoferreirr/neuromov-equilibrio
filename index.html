@@ -15,7 +15,8 @@
 <link rel="icon" href="assets/img/favicon-64.png" type="image/png" sizes="64x64" />
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-<link rel="preload" as="image" href="assets/img/julia-nicoly-960.webp" imagesrcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w, assets/img/julia-nicoly-1920.webp 1920w" imagesizes="100vw" fetchpriority="high" />
+<link rel="preload" as="image" media="(max-width:1000px)" href="assets/img/julia-nicoly-960.webp" imagesrcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w" imagesizes="100vw" fetchpriority="high" />
+<link rel="preload" as="image" media="(min-width:1001px)" href="assets/img/hero-hd-1920.webp" imagesrcset="assets/img/hero-hd-1920.webp 1920w, assets/img/hero-hd-2560.webp 2560w" imagesizes="100vw" fetchpriority="high" />
 <link rel="preload" href="assets/fonts/poppins-light.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/poppins-regular.woff2" as="font" type="font/woff2" crossorigin />
 <style>
@@ -93,6 +94,7 @@ button,input{font:inherit;color:inherit}
    num degradê que sobe do vinho. */
 .hero{position:relative;overflow:hidden;background:var(--plum-900);color:var(--cream)}
 .hero__media{position:relative;height:min(122vw,600px)}
+.hero__media picture{display:contents}
 .hero__media img{width:100%;height:100%;object-fit:cover;object-position:50% 16%}
 .hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,17,23,.62) 0%,rgba(30,17,23,0) 20%,rgba(42,24,32,0) 48%,rgba(42,24,32,.72) 74%,var(--plum-900) 100%)}
 .hero__in{position:relative;z-index:1;margin-top:-30vw;padding-bottom:clamp(3.5rem,8vw,5rem);text-align:center}
@@ -145,6 +147,7 @@ button,input{font:inherit;color:inherit}
 
 /* professoras: recortadas, em pé sobre uma linha */
 .team .h2{text-align:center}
+@media (max-width:1000px){.team .h2{white-space:nowrap;font-size:min(1.95rem,8vw)}}
 .team__grid{margin-top:clamp(2.6rem,5vw,4rem);display:grid;grid-template-columns:1fr;gap:3.5rem;max-width:980px;margin-inline:auto;align-items:start}
 .prof{text-align:center}
 .prof__fig{height:clamp(360px,100vw,440px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:center;align-items:flex-end}
@@ -224,23 +227,30 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 .bar.is-on{transform:none}
 .bar p{display:grid;line-height:1.25}
 .bar b{font-weight:500;font-size:1.05rem}
-.bar span{font-size:.75rem;color:var(--mauve-soft)}
+.bar span{font-size:.75rem;color:var(--mauve-soft);white-space:nowrap}
 .bar .btn{min-height:46px;padding:0 1.2rem;font-size:.84rem}
+/* celulares estreitos (SE, mini, Galaxy S): "1º lote · vagas limitadas" cabe numa linha */
+@media (max-width:400px){
+  .bar{gap:.7rem}
+  .bar span{font-size:.7rem}
+  .bar .btn{padding:0 .95rem;font-size:.8rem}
+}
 
 /* rodapé */
 .foot{background:var(--plum-950);color:rgba(237,231,220,.7);padding:clamp(3.5rem,7vw,5rem) 0 2.2rem;font-size:.9rem;text-align:center}
-.foot__grid{display:grid;grid-template-columns:1fr;gap:2.4rem;justify-items:center}
+.foot__grid{display:grid;grid-template-columns:1fr 1fr;column-gap:1.4rem;row-gap:2.4rem;justify-items:start;text-align:left}
+.foot__grid > div:first-child,.foot__grid > .btn{grid-column:1/-1;justify-self:center;text-align:center}
 .foot__logo{color:var(--cream);display:inline-block}
 .foot__logo svg{height:52px;width:134px;display:block}
 .foot__course{margin-top:1.1rem;line-height:1.7}
 .foot__h{font-weight:500;font-size:.86rem;color:var(--cream);margin-bottom:.8rem}
-.foot__links{display:grid;gap:.45rem}
+.foot__links{display:grid;gap:.45rem;font-size:.82rem}
 .foot__links a,.foot__contact a{transition:color .3s}
 .foot__links a:hover,.foot__contact a:hover{color:var(--cream)}
-.foot__contact{display:grid;gap:.55rem;font-style:normal;line-height:1.6}
-.foot__ig{display:inline-flex;align-items:center;gap:.55rem;justify-content:center}
+.foot__contact{display:grid;gap:.5rem;font-style:normal;line-height:1.55;font-size:.82rem;align-content:start}
+.foot__ig{display:inline-flex;align-items:center;gap:.5rem;justify-content:flex-start;white-space:nowrap}
 .foot__ig svg{width:18px;height:18px}
-.foot__map{border-bottom:1px solid currentColor;justify-self:center;padding-bottom:1px}
+.foot__map{border-bottom:1px solid currentColor;justify-self:start;padding-bottom:1px}
 .foot__bot{margin-top:2.8rem;padding-top:1.5rem;border-top:1px solid var(--line-light);font-size:.8rem;color:rgba(237,231,220,.5)}
 
 /* entrada suave: só esconde se o JS estiver rodando */
@@ -250,6 +260,15 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 @media (max-width:1000px){
   .top__nav a:not(.btn){display:none}
   .bar{display:flex}
+}
+/* celulares de tela baixa (iPhone SE, Galaxy S8): foto menor e espaços mais justos para o botão aparecer na primeira tela */
+@media (max-width:1000px) and (max-height:780px){
+  .hero__media{height:min(122vw,52svh)}
+  .hero__in{margin-top:-22vw}
+  .hero h1 .sub{margin-top:.7rem}
+  .hero__lead{margin-top:.9rem;font-size:.93rem;line-height:1.6}
+  .hero__when{margin-top:.8rem;font-size:.9rem}
+  .hero__ctas{margin-top:1.2rem}
 }
 @media (max-width:640px){
   :root{--top-h:62px}
@@ -335,7 +354,10 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
   /* rodapé em colunas */
   .foot{text-align:left}
+  .br-m{display:none}
   .foot__grid{grid-template-columns:1.3fr 1fr 1.2fr auto;justify-items:start;align-items:start;gap:3rem}
+  .foot__grid > div:first-child,.foot__grid > .btn{grid-column:auto;justify-self:start;text-align:left}
+  .foot__links,.foot__contact{font-size:.9rem}
   .foot__ig{justify-content:flex-start}
   .foot__map{justify-self:start}
 }
@@ -371,12 +393,16 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   <!-- HERO -->
   <section class="hero" id="inicio">
     <div class="hero__media">
-      <img src="assets/img/julia-nicoly-960.webp" srcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w, assets/img/julia-nicoly-1920.webp 1920w" sizes="100vw" width="1200" height="1559" alt="Júlia Faria e Nicoly Alves, fisioterapeutas da Neuromov e professoras do curso" fetchpriority="high" />
+      <picture>
+        <!-- computador: foto ampliada com IA (Upscayl, modelo high-fidelity); celular: a original, que já basta -->
+        <source media="(min-width:1001px)" srcset="assets/img/hero-hd-1920.webp 1920w, assets/img/hero-hd-2560.webp 2560w" sizes="100vw" />
+        <img src="assets/img/julia-nicoly-960.webp" srcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w" sizes="100vw" width="1200" height="1559" alt="Júlia Faria e Nicoly Alves, fisioterapeutas da Neuromov e professoras do curso" fetchpriority="high" />
+      </picture>
     </div>
     <svg class="hero__mark" viewBox="160 672 830 656" aria-hidden="true"><use href="#logo"/></svg>
     <div class="wrap wrap--wide hero__in">
       <div class="hero__copy">
-        <h1>Equilíbrio na prática clínica<span class="sub">Avaliação, raciocínio clínico e reabilitação</span></h1>
+        <h1>Equilíbrio na prática clínica<span class="sub">Avaliação, raciocínio clínico<br class="br-m" /> e reabilitação</span></h1>
         <p class="hero__lead">Curso presencial e teórico-prático para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar o raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
         <p class="hero__when">28 e 29 de novembro de 2026<span>·</span>Neuromov, Uberlândia/MG</p>
         <div class="hero__ctas" id="heroCtas">
