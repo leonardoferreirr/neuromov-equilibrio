@@ -2,7 +2,7 @@
 
 Landing do curso presencial **Equilíbrio na Prática Clínica: avaliação, raciocínio clínico e reabilitação**, da Neuromov (Uberlândia/MG), com Júlia Faria e Nicoly Alves.
 
-HTML, CSS e JS puros num `index.html`, sem build, mais uma função na Vercel (`api/inscricao.js`) que manda as inscrições por e-mail.
+HTML, CSS e JS puros num `index.html`, sem build, mais duas funções na Vercel: `api/inscricao.js` (guarda a inscrição no banco e manda por e-mail) e `api/reenviar.js` (reenvio diário).
 
 ## De onde veio o conteúdo
 
@@ -12,21 +12,33 @@ HTML, CSS e JS puros num `index.html`, sem build, mais uma função na Vercel (`
 - **Stories das professoras:** a formação de cada uma. **Nicoly agora é mestre** (já defendeu), não mestranda. "UFSCAR" foi escrito como a sigla oficial, UFSCar.
 - **Fotos:** a foto das duas (`Júlia e Nicole.jpg`) é usada no topo. Os retratos individuais vêm das fotos de cada uma nos stories.
 
-## Inscrição por e-mail (falta configurar)
+## Inscrição: banco + e-mail
 
-O formulário envia para `/api/inscricao`, que manda um e-mail pelo Gmail com os dados e o comprovante do Pix em anexo. A resposta ao e-mail vai direto para a pessoa inscrita.
+Nenhuma inscrição pode se perder, então o formulário usa duas vias independentes (`api/inscricao.js`, peças em `lib/inscricao.js`):
+
+1. **Banco (Supabase):** a inscrição e o comprovante ficam guardados primeiro, numa pasta só da Neuromov (schema `neuromov`, tabela `inscricoes`, bucket privado `neuromov-comprovantes`). O esquema está em `supabase/schema.sql`.
+2. **E-mail (Gmail):** chega para a Neuromov com os dados e o comprovante em anexo. Responder o e-mail fala direto com a pessoa inscrita.
+
+A pessoa vê "Inscrição recebida" se ao menos uma das duas funcionou. Se o e-mail falhar (senha de app revogada, Gmail fora), a inscrição fica marcada no banco e o **reenvio diário** (`api/reenviar.js`, cron da Vercel às 8h de Brasília) manda depois, no máximo uma tentativa por hora cada. O mesmo cron mantém o Supabase grátis acordado (ele pausa depois de 7 dias sem uso).
 
 Na Vercel, em **Settings > Environment Variables**:
 
 | Variável | O que é |
 |---|---|
-| `GMAIL_USER` | o Gmail que vai enviar (ex.: a conta da Neuromov) |
-| `GMAIL_APP_PASSWORD` | senha de app do Google dessa conta (precisa da verificação em duas etapas ligada) |
-| `INSCRICAO_TO` | opcional: outro e-mail para receber as inscrições. Sem ele, chega no próprio `GMAIL_USER` |
+| `SUPABASE_URL` | endereço do projeto Supabase |
+| `SUPABASE_SECRET_KEY` | chave secreta do projeto (Settings > API Keys > Secret keys), só no servidor. Aceita também `SUPABASE_SERVICE_ROLE_KEY` |
+| `GMAIL_USER` | o Gmail que envia |
+| `GMAIL_APP_PASSWORD` | senha de app desse Gmail (precisa da verificação em duas etapas ligada). Trocar a senha do Google revoga a senha de app |
+| `INSCRICAO_TO` | para onde vão as inscrições (hoje juliafariafisio@gmail.com). Sem ele, chega no próprio `GMAIL_USER` |
+| `CRON_SECRET` | opcional: se existir, só a Vercel consegue chamar o reenvio |
 
-**Sem essas variáveis o formulário não envia** (a função responde 503 e a página mostra a mensagem de erro). Configurar antes de colocar o link na bio.
+Sem banco e sem Gmail a função responde 503. Variável nova só vale depois de publicar de novo.
 
-Comprovante: foto grande é reduzida no próprio celular antes do envio. PDF tem limite de 3 MB, por causa do limite de 4,5 MB por requisição da Vercel.
+**Comprovante:** foto, print (PNG, JPG, WEBP, HEIC) ou PDF. Foto grande é reduzida no próprio celular; se o navegador não abrir a imagem (HEIC no Android), vai a original. Limite de 3 MB para o arquivo original, por causa do limite de 4,5 MB por requisição da Vercel. O servidor confere o tipo pelos primeiros bytes do arquivo, não pelo nome.
+
+**Segurança:** a chave secreta só existe na função; a tabela e o bucket não têm nenhuma permissão para o público. O IP não é guardado (só uma impressão do dia, para frear mais de 5 inscrições em 10 minutos do mesmo lugar). Campo escondido contra robô.
+
+Testes: o roteiro com Supabase e Gmail falsos cobre envio normal, PDF, HEIC, cartão, arquivo disfarçado, arquivo grande, Gmail fora, banco fora, os dois fora, freio e reenvio sem duplicar.
 
 ## Chave Pix
 

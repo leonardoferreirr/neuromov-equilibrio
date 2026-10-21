@@ -1,69 +1,48 @@
-/* Recebe a inscrição do formulário e manda por e-mail (Gmail SMTP).
-   Variáveis na Vercel: GMAIL_USER, GMAIL_APP_PASSWORD (senha de app do Google)
-   e, se o destino for outro e-mail, INSCRICAO_TO. Sem elas, responde 503. */
-const nodemailer = require('nodemailer');
-
-const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const clean = (v, n = 200) => String(v == null ? '' : v).replace(/[\r\n\t]+/g, ' ').trim().slice(0, n);
+/* Recebe a inscrição do formulário. Guarda primeiro no banco (Supabase) e depois manda o e-mail
+   (Gmail SMTP) com o comprovante. Responde "ok" se ao menos uma das duas vias funcionou: o que o
+   e-mail não levou, o reenvio diário (api/reenviar.js) leva. Detalhes e variáveis em lib/inscricao.js. */
+const L = require('../lib/inscricao');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false }); }
 
-  const { GMAIL_USER, GMAIL_APP_PASSWORD, INSCRICAO_TO } = process.env;
-  if (!GMAIL_USER || !GMAIL_APP_PASSWORD) return res.status(503).json({ ok: false, error: 'email-not-configured' });
+  const banco = L.bancoLigado(), email = L.emailLigado();
+  if (!banco && !email) return res.status(503).json({ ok: false, error: 'not-configured' });
 
   let b = req.body;
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = {}; } }
   b = b || {};
   if (b.site) return res.status(200).json({ ok: true }); // robô preencheu o campo escondido
 
-  const d = {
-    nome: clean(b.nome, 120),
-    email: clean(b.email, 160),
-    telefone: clean(b.telefone, 40),
-    escolaridade: clean(b.escolaridade, 60),
-    pagamento: clean(b.pagamento, 60),
-  };
-  const ESC = ['Estudante de Fisioterapia', 'Fisioterapeuta'];
-  const PAG = ['Pix', 'Cartão de crédito (até 4x com juros)'];
-  if (d.nome.length < 3 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email) || d.telefone.replace(/\D/g, '').length < 10 || !ESC.includes(d.escolaridade) || !PAG.includes(d.pagamento)) {
-    return res.status(400).json({ ok: false, error: 'invalid' });
+  const v = L.lerInscricao(b);
+  if (v.erro) return res.status(v.status).json({ ok: false, error: v.erro });
+  const { d, arquivo } = v;
+
+  // freio para quem dispara dezenas de inscrições do mesmo lugar (se o banco não responder, não trava ninguém)
+  const ip = L.ipHash(req);
+  if (banco) {
+    try { if ((await L.inscricoesRecentes(ip)) >= 5) return res.status(429).json({ ok: false, error: 'too-many' }); }
+    catch (e) { console.error('inscricao limite', e.message); }
   }
 
-  const attachments = [];
-  const c = b.comprovante;
-  if (c && c.data) {
-    const type = clean(c.type, 80);
-    if (!/^(image\/(jpeg|png|webp|heic|heif|gif)|application\/pdf)$/.test(type)) return res.status(400).json({ ok: false, error: 'file-type' });
-    const buf = Buffer.from(String(c.data), 'base64');
-    if (buf.length > 3.6 * 1024 * 1024) return res.status(413).json({ ok: false, error: 'file-size' });
-    attachments.push({ filename: clean(c.name, 120).replace(/[^\w.\- ]+/g, '_') || 'comprovante', content: buf, contentType: type });
+  let linha = null;
+  if (banco) {
+    try {
+      const comprovante = arquivo ? await L.guardarArquivo(arquivo) : null;
+      linha = await L.salvarInscricao({ ...d, comprovante, comprovante_nome: arquivo ? arquivo.nome : null, comprovante_tipo: arquivo ? arquivo.tipo : null, ip_hash: ip });
+    } catch (e) { console.error('inscricao banco', e.message); }
   }
-  if (d.pagamento === 'Pix' && !attachments.length) return res.status(400).json({ ok: false, error: 'missing-receipt' });
 
-  const rows = [
-    ['Nome completo', d.nome], ['E-mail', d.email], ['Telefone', d.telefone],
-    ['Escolaridade', d.escolaridade], ['Pagamento', d.pagamento],
-    ['Comprovante', attachments.length ? 'em anexo' : (d.pagamento === 'Pix' ? 'faltando' : 'não se aplica (cartão: mandar o link)')],
-  ];
-  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#2A1A22">
-    <h2 style="font-weight:400;margin:0 0 16px">Nova inscrição: Equilíbrio na Prática Clínica</h2>
-    <table cellpadding="8" style="border-collapse:collapse">${rows.map(([k, v]) => `<tr><td style="color:#6C5C64;border-bottom:1px solid #eee">${esc(k)}</td><td style="border-bottom:1px solid #eee"><b>${esc(v)}</b></td></tr>`).join('')}</table>
-    <p style="color:#6C5C64;font-size:13px;margin-top:18px">Responda este e-mail para falar direto com a pessoa inscrita.</p></div>`;
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
-
-  try {
-    const t = nodemailer.createTransport({ service: 'gmail', auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD } });
-    await t.sendMail({
-      from: `"Inscrições Neuromov" <${GMAIL_USER}>`,
-      to: INSCRICAO_TO || GMAIL_USER,
-      replyTo: `"${d.nome.replace(/"/g, '')}" <${d.email}>`,
-      subject: `Nova inscrição: ${d.nome} (${d.pagamento === 'Pix' ? 'Pix' : 'Cartão'})`,
-      text, html, attachments,
-    });
-    return res.status(200).json({ ok: true });
-  } catch (e) {
-    console.error('inscricao', e && e.message);
-    return res.status(502).json({ ok: false, error: 'send-failed' });
+  let enviado = false, erro = 'email-not-configured';
+  if (email) {
+    try { await L.enviarEmail(d, arquivo, linha && linha.criado_em); enviado = true; erro = null; }
+    catch (e) { erro = e.message; console.error('inscricao email', e.message); }
   }
+  // sem Gmail configurado não conta tentativa: o reenvio manda assim que ele existir
+  if (linha && email) {
+    try { await L.marcarEnvio(linha.id, enviado, erro, 1); } catch (e) { console.error('inscricao marca', e.message); }
+  }
+
+  if (linha || enviado) return res.status(200).json({ ok: true });
+  return res.status(502).json({ ok: false, error: 'send-failed' });
 };

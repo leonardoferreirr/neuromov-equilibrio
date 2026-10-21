@@ -685,11 +685,15 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   file.addEventListener('change', function () { $('#fileName').textContent = file.files[0] ? file.files[0].name : 'Anexar imagem ou PDF do comprovante'; });
 
   /* foto grande é reduzida no próprio celular antes de enviar; PDF vai como está */
+  var MAX_ORIGINAL = 3 * 1024 * 1024;
+  // foto grande vira JPEG de 1800 px; se o navegador não abrir a imagem (HEIC no Android), vai a original
   function readFile(f) {
+    function original(res, rej) {
+      if (f.size > MAX_ORIGINAL) return rej(new Error('size'));
+      var r = new FileReader(); r.onload = function () { res({ name: f.name, type: f.type || 'application/octet-stream', data: String(r.result).split(',')[1] }); }; r.onerror = rej; r.readAsDataURL(f);
+    }
     return new Promise(function (res, rej) {
-      if (!f.type.startsWith('image/') || f.size < 900 * 1024) {
-        var r = new FileReader(); r.onload = function () { res({ name: f.name, type: f.type || 'application/octet-stream', data: String(r.result).split(',')[1] }); }; r.onerror = rej; r.readAsDataURL(f); return;
-      }
+      if (!/^image\//.test(f.type) || f.size < 900 * 1024) return original(res, rej);
       var img = new Image(), url = URL.createObjectURL(f);
       img.onload = function () {
         var k = Math.min(1, 1800 / Math.max(img.width, img.height)), c = document.createElement('canvas');
@@ -697,10 +701,16 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
         res({ name: f.name.replace(/\.[^.]+$/, '') + '.jpg', type: 'image/jpeg', data: c.toDataURL('image/jpeg', 0.85).split(',')[1] });
       };
-      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('img')); };
+      img.onerror = function () { URL.revokeObjectURL(url); original(res, rej); };
       img.src = url;
     });
   }
+  var ERROS = {
+    'file-type': 'Não reconhecemos o arquivo. Envie uma foto, um print ou o PDF do comprovante.',
+    'file-size': 'O arquivo ficou grande demais. Envie um print do comprovante.',
+    'missing-receipt': 'Anexe o comprovante do Pix.',
+    'too-many': 'Recebemos várias inscrições seguidas daqui. Aguarde alguns minutos e tente de novo.'
+  };
 
   form.addEventListener('submit', function (e) {
     e.preventDefault(); msg.textContent = '';
@@ -713,17 +723,19 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
     if (!data.pagamento) return fail('Escolha a forma de pagamento.');
     var f = file.files[0];
     if (data.pagamento === 'Pix' && !f) return fail('Anexe o comprovante do Pix.');
-    if (f && f.type === 'application/pdf' && f.size > 3 * 1024 * 1024) return fail('O PDF passou de 3 MB. Envie uma foto ou print do comprovante.');
+    if (f && !/^image\//.test(f.type) && f.size > MAX_ORIGINAL) return fail('O PDF passou de 3 MB. Envie uma foto ou print do comprovante.');
     send.disabled = true; send.firstChild.textContent = 'Enviando... ';
     (f && data.pagamento === 'Pix' ? readFile(f) : Promise.resolve(null)).then(function (att) {
       data.comprovante = att;
       return fetch('/api/inscricao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     }).then(function (r) {
-      if (!r.ok) throw new Error(r.status);
+      if (r.ok) return;
+      return r.json().catch(function () { return {}; }).then(function (j) { var e = new Error(j.error || r.status); e.code = j.error || (r.status === 413 ? 'file-size' : ''); throw e; });
+    }).then(function () {
       form.style.display = 'none'; $('#done').classList.add('is-on');
       $('#done').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-    }).catch(function () {
-      fail('Não conseguimos enviar agora. Tente de novo em instantes ou fale com a gente no Instagram @neuromov.fisio.');
+    }).catch(function (e) {
+      fail(ERROS[e.code] || (e.message === 'size' ? ERROS['file-size'] : 'Não conseguimos enviar agora. Tente de novo em instantes ou fale com a gente no Instagram @neuromov.fisio.'));
     }).then(function () { send.disabled = false; send.firstChild.textContent = 'Enviar inscrição '; });
   });
   function fail(t, sel) { msg.textContent = t; if (sel) $(sel).focus(); return false; }
