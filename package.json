@@ -1,0 +1,8 @@
+{
+  "name": "neuromov-equilibrio",
+  "private": true,
+  "description": "Landing do curso Equilíbrio na Prática Clínica (Neuromov)",
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
