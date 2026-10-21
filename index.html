@@ -113,7 +113,9 @@ button,input{font:inherit;color:inherit}
 
 /* abertura + vídeo (celular: título, vídeo e texto, nessa ordem) */
 .intro{text-align:center}
-.intro__in{display:grid;grid-template-columns:1fr;grid-template-areas:"title" "video" "text";gap:2.2rem}
+.intro__in{display:grid;grid-template-columns:1fr;grid-template-areas:"title" "video" "text" "cta";gap:2.2rem}
+.intro__main{display:contents}
+.intro__cta{grid-area:cta;display:flex;justify-content:center}
 .intro .h2{grid-area:title;font-size:1.68rem;line-height:1.18;text-wrap:balance;max-width:22rem;margin-inline:auto}
 .intro__txt{grid-area:text;max-width:36rem;margin-inline:auto}
 .video{grid-area:video;position:relative;width:min(100%,340px);margin:0 auto;aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:var(--plum-900);box-shadow:0 30px 60px -28px rgba(42,24,32,.45)}
@@ -145,7 +147,7 @@ button,input{font:inherit;color:inherit}
 .team .h2{text-align:center}
 .team__grid{margin-top:clamp(2.6rem,5vw,4rem);display:grid;grid-template-columns:1fr;gap:3.5rem;max-width:980px;margin-inline:auto;align-items:start}
 .prof{text-align:center}
-.prof__fig{height:clamp(380px,108vw,460px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:center;align-items:flex-end}
+.prof__fig{height:clamp(360px,100vw,440px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:center;align-items:flex-end}
 .prof__fig img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom}
 .prof h3{margin-top:1.6rem;font-size:clamp(1.85rem,2.6vw,2.2rem);line-height:1.1;color:var(--plum-900)}
 .prof ul{list-style:none;margin-top:1rem}
@@ -257,6 +259,9 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
 /* ================= computador ================= */
 @media (min-width:1001px){
+  /* cabeçalho e topo usam uma largura maior: o texto vai mais para a esquerda e os botões mais para a direita */
+  .wrap--wide{max-width:1320px}
+
   /* topo: logo e menu escuros sobre a foto clara; ao rolar, o fundo vira vinho e tudo fica creme */
   .top:not(.is-solid) .top__logo{color:var(--plum-900)}
   .top:not(.is-solid) .top__nav a:not(.btn){color:rgba(42,24,32,.78)}
@@ -275,7 +280,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   /* texto todo à esquerda; os botões à direita, com a base alinhada à linha da data */
   .hero__in{margin-top:0;padding-top:0;padding-bottom:3.2rem;text-align:left}
   .hero__copy{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:3rem;align-items:end}
-  .hero h1{grid-column:1/-1;white-space:nowrap;font-size:clamp(2.9rem,4.6vw,4.7rem);line-height:1.05}
+  .hero h1{grid-column:1/-1;white-space:nowrap;font-size:clamp(2.6rem,4vw,4.2rem);line-height:1.05}
   .hero h1 .sub{white-space:nowrap;margin-top:.6rem;font-size:clamp(1.1rem,1.5vw,1.4rem);color:var(--cream)}
   .hero__lead{grid-column:1/-1;margin:1rem 0 0;max-width:50rem;font-size:1rem;line-height:1.65;text-wrap:balance}
   .hero__when{grid-column:1;margin-top:.8rem;font-size:.92rem;line-height:1.5}
@@ -284,10 +289,13 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
   /* abertura: título em até 3 linhas, texto do tamanho do vídeo */
   .intro{text-align:left}
-  .intro__in{grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"title video" "text video";column-gap:clamp(4rem,8vw,7rem);row-gap:2rem}
-  .intro .h2{align-self:start;max-width:19em;margin:0;font-size:clamp(1.9rem,2.5vw,2.35rem);line-height:1.15}
-  .intro__txt{align-self:end;margin:0;max-width:38rem}
-  .intro__txt .p{font-size:1.1rem;line-height:1.85}
+  /* título encosta no topo do vídeo e o botão na base; o JS ajusta o tamanho do título para preencher */
+  .intro__in{grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"main video";column-gap:clamp(4rem,8vw,7rem);align-items:stretch}
+  .intro__main{grid-area:main;display:flex;flex-direction:column;align-items:flex-start}
+  .intro .h2{margin:0;max-width:none;font-size:clamp(2.1rem,3.3vw,3rem);line-height:1.12;text-wrap:balance}
+  .intro__txt{margin:1.6rem 0 0;max-width:40rem}
+  .intro__txt .p{font-size:1.05rem;line-height:1.8}
+  .intro__cta{margin-top:auto;padding-top:1.6rem;justify-content:flex-start}
   .video{width:300px;margin:0}
 
   /* módulos */
@@ -302,7 +310,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   /* professoras lado a lado; nome e formação começam na mesma altura */
   .team__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4rem}
   .prof{text-align:left}
-  .prof__fig{height:500px}
+  .prof__fig{height:560px}
 
   /* informações */
   .info .h2{white-space:nowrap}
@@ -347,7 +355,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 </svg>
 
 <header class="top" id="top">
-  <div class="wrap top__in">
+  <div class="wrap wrap--wide top__in">
     <a class="top__logo" href="#inicio" aria-label="Neuromov, início"><svg role="img" aria-hidden="true"><use href="#logo"/></svg></a>
     <nav class="top__nav" aria-label="Navegação">
       <a href="#curso">O curso</a>
@@ -366,7 +374,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
       <img src="assets/img/julia-nicoly-960.webp" srcset="assets/img/julia-nicoly-640.webp 640w, assets/img/julia-nicoly-960.webp 960w, assets/img/julia-nicoly-1200.webp 1200w, assets/img/julia-nicoly-1920.webp 1920w" sizes="100vw" width="1200" height="1559" alt="Júlia Faria e Nicoly Alves, fisioterapeutas da Neuromov e professoras do curso" fetchpriority="high" />
     </div>
     <svg class="hero__mark" viewBox="160 672 830 656" aria-hidden="true"><use href="#logo"/></svg>
-    <div class="wrap hero__in">
+    <div class="wrap wrap--wide hero__in">
       <div class="hero__copy">
         <h1>Equilíbrio na prática clínica<span class="sub">Avaliação, raciocínio clínico e reabilitação</span></h1>
         <p class="hero__lead">Curso presencial e teórico-prático para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar o raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
@@ -382,14 +390,17 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
   <!-- O CURSO -->
   <section class="sec intro" id="curso">
     <div class="wrap intro__in">
-      <h2 class="h2 rv">Você sabe identificar quais componentes do equilíbrio estão comprometidos no seu paciente?</h2>
+      <div class="intro__main">
+        <h2 class="h2 rv" id="introTitle">Você sabe identificar quais componentes do equilíbrio estão comprometidos no seu paciente?</h2>
+        <div class="intro__txt">
+          <p class="p rv" style="--d:1">Pensando em aproximar a teoria da prática, a Neuromov preparou um curso presencial, com abordagem teórico-prática, voltado para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar seu raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
+          <p class="p rv" style="--d:2">A proposta é sair da ideia de apenas aplicar testes e escalas para entender os sistemas envolvidos no equilíbrio, construir uma avaliação direcionada para cada paciente idoso ou neurológico e transformar os achados clínicos em estratégias de tratamento.</p>
+        </div>
+        <div class="intro__cta rv" style="--d:2"><a class="btn btn--plum" href="#inscricao">Garantir minha vaga <svg aria-hidden="true"><use href="#arrow"/></svg></a></div>
+      </div>
       <div class="video rv" id="video" style="--d:1">
         <img src="assets/img/video-poster.webp" width="540" height="960" loading="lazy" decoding="async" alt="" />
         <button class="video__play" type="button" aria-label="Assistir ao vídeo de apresentação do curso"><i></i></button>
-      </div>
-      <div class="intro__txt">
-        <p class="p rv" style="--d:1">Pensando em aproximar a teoria da prática, a Neuromov preparou um curso presencial, com abordagem teórico-prática, voltado para estudantes de Fisioterapia e fisioterapeutas que desejam aprimorar seu raciocínio clínico na avaliação e reabilitação do equilíbrio.</p>
-        <p class="p rv" style="--d:2">A proposta é sair da ideia de apenas aplicar testes e escalas para entender os sistemas envolvidos no equilíbrio, construir uma avaliação direcionada para cada paciente idoso ou neurológico e transformar os achados clínicos em estratégias de tratamento.</p>
       </div>
     </div>
   </section>
@@ -427,7 +438,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
       <h2 class="h2 rv">Quem conduz o curso</h2>
       <div class="team__grid">
         <article class="prof rv">
-          <div class="prof__fig"><img src="assets/img/julia-recorte.webp" width="560" height="999" loading="lazy" decoding="async" alt="Júlia Faria" /></div>
+          <div class="prof__fig"><img src="assets/img/julia-recorte.webp" width="844" height="1150" loading="lazy" decoding="async" alt="Júlia Faria" /></div>
           <h3 class="it">Júlia Faria</h3>
           <ul>
             <li>Fisioterapeuta pela UFU</li>
@@ -437,7 +448,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
           </ul>
         </article>
         <article class="prof rv" style="--d:1">
-          <div class="prof__fig"><img src="assets/img/nicoly-recorte.webp" width="560" height="999" loading="lazy" decoding="async" alt="Nicoly Alves" /></div>
+          <div class="prof__fig"><img src="assets/img/nicoly-recorte.webp" width="825" height="1150" loading="lazy" decoding="async" alt="Nicoly Alves" /></div>
           <h3 class="it">Nicoly Alves</h3>
           <ul>
             <li>Fisioterapeuta pela UFU</li>
@@ -602,6 +613,19 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     items.forEach(function (el) { io.observe(el); });
   }
+
+  /* abertura (computador): o maior título que ainda deixa texto e botão dentro da altura do vídeo */
+  var desk = matchMedia('(min-width: 1001px)'), it = $('#introTitle'), main = $('.intro__main'), vid = $('#video');
+  function fitIntro() {
+    if (!desk.matches) { it.style.fontSize = ''; return; }
+    var txt = $('.intro__txt'), cta = $('.intro__cta');
+    var need = function () { return it.offsetHeight + txt.offsetHeight + 26 + cta.querySelector('.btn').offsetHeight + 26; };
+    var lo = 26, hi = 64, H = vid.offsetHeight;
+    for (var k = 0; k < 14; k++) { var mid = (lo + hi) / 2; it.style.fontSize = mid + 'px'; if (need() <= H) lo = mid; else hi = mid; }
+    it.style.fontSize = Math.floor(lo) + 'px';
+  }
+  var fitT; addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fitIntro, 120); });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitIntro); fitIntro();
 
   /* vídeo só carrega no clique */
   var vbox = $('#video');
