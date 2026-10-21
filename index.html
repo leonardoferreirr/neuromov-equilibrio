@@ -266,19 +266,20 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 
   /* hero: foto de fundo inteira. A imagem é presa pelo topo (começa logo acima do cabelo delas),
      e a seção cresce o necessário para o texto nunca encostar no rosto. */
-  .hero{--t:330px;min-height:max(100svh,calc(32.5vw + var(--t) + 24px));display:flex;align-items:flex-end}
+  .hero{--t:290px;min-height:max(100svh,calc(32.5vw + var(--t) + 24px));display:flex;align-items:flex-end}
   .hero__media{position:absolute;inset:0;height:auto}
   .hero__media img{position:absolute;left:0;top:-16.25vw;width:100%;height:auto;object-fit:initial}
   .hero__media::after{background:linear-gradient(0deg,var(--plum-900) 0,rgba(42,24,32,.93) calc(var(--t) * .55),rgba(42,24,32,.5) var(--t),rgba(42,24,32,0) calc(var(--t) + 120px))}
   .hero__media::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(42,24,32,.38) 0,rgba(42,24,32,0) 16%,rgba(42,24,32,0) 80%,rgba(42,24,32,.6) 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 38%);mask-image:linear-gradient(180deg,transparent 0,#000 38%)}
   .hero__mark{display:none}
-  .hero__in{margin-top:0;padding-top:0;padding-bottom:3rem}
-  .hero__copy{max-width:none}
-  .hero h1{white-space:nowrap;font-size:clamp(2.9rem,4.6vw,4.7rem);line-height:1.05}
-  .hero h1 .sub{white-space:nowrap;margin-top:.6rem;font-size:clamp(1.1rem,1.5vw,1.4rem)}
-  .hero__lead{margin-top:1rem;max-width:50rem;font-size:1rem;line-height:1.65;text-wrap:balance}
-  .hero__when{margin-top:.8rem;font-size:.92rem}
-  .hero__ctas{margin-top:1.5rem;flex-direction:row;justify-content:center;gap:.8rem}
+  /* texto todo à esquerda; os botões à direita, com a base alinhada à linha da data */
+  .hero__in{margin-top:0;padding-top:0;padding-bottom:3.2rem;text-align:left}
+  .hero__copy{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:3rem;align-items:end}
+  .hero h1{grid-column:1/-1;white-space:nowrap;font-size:clamp(2.9rem,4.6vw,4.7rem);line-height:1.05}
+  .hero h1 .sub{white-space:nowrap;margin-top:.6rem;font-size:clamp(1.1rem,1.5vw,1.4rem);color:var(--cream)}
+  .hero__lead{grid-column:1/-1;margin:1rem 0 0;max-width:50rem;font-size:1rem;line-height:1.65;text-wrap:balance}
+  .hero__when{grid-column:1;margin-top:.8rem;font-size:.92rem;line-height:1.5}
+  .hero__ctas{grid-column:2;grid-row:3;margin-top:0;flex-direction:row;justify-content:flex-end;gap:.8rem}
   .hero__ctas .btn{width:auto}
 
   /* abertura: título em até 3 linhas, texto do tamanho do vídeo */
