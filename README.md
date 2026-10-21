@@ -10,7 +10,7 @@ HTML, CSS e JS puros num `index.html`, sem build, mais uma função na Vercel (`
 - **Vídeo de apresentação:** o foco em pacientes idosos e neurológicos e a ideia de "sair de apenas aplicar testes e escalas". O vídeo também está na página (`assets/curso.mp4`, 540x960) e só carrega quando a pessoa clica no play.
 - **Formulário antigo do forms.app:** os mesmos 6 campos (nome, e-mail, telefone, escolaridade, forma de pagamento e comprovante do Pix).
 - **Stories das professoras:** a formação de cada uma. **Nicoly agora é mestre** (já defendeu), não mestranda. "UFSCAR" foi escrito como a sigla oficial, UFSCar.
-- **Fotos:** a foto das duas (`Júlia e Nicole.jpg`) é usada no topo e recortada para os retratos individuais.
+- **Fotos:** a foto das duas (`Júlia e Nicole.jpg`) é usada no topo. Os retratos individuais vêm das fotos de cada uma nos stories.
 
 ## Inscrição por e-mail (falta configurar)
 
@@ -37,20 +37,27 @@ Comprovante: foto grande é reduzida no próprio celular antes do envio. PDF tem
 - Ameixa e creme, as cores dos stories e do logo. Fontes: Poppins (300/400/500) nos títulos e textos, Playfair Display itálica nos nomes e nos números dos módulos, como nos stories. Tudo servido do próprio site.
 - Logo vetorizado (`assets/img/logo.svg`), usado num `<symbol>` que herda a cor do texto.
 - **Topo, celular:** a foto das duas ocupa a tela e se desfaz no vinho, com o título por cima do degradê.
-- **Topo, computador:** a foto é o fundo da seção inteira. A imagem fica presa pelo topo (`top:-16.25vw`, começando logo acima do cabelo delas), e a seção cresce o necessário (`min-height: max(100svh, 32.5vw + texto)`) para o texto nunca encostar no rosto. Título e subtítulo ficam numa linha cada, embaixo, num degradê que sobe do vinho. O cabeçalho começa com logo e menu escuros sobre a foto clara e vira vinho com logo creme ao rolar.
+- **Topo, celular baixo (iPhone SE, Galaxy S8):** a foto fica menor e os espaços mais justos, para o botão aparecer na primeira tela.
+- **Topo, computador:** a foto é o fundo da seção inteira, numa versão ampliada com IA (Upscayl, modelo high-fidelity, `hero-hd-1920/2560.webp`). O celular continua com a foto original, que já basta. A imagem fica presa pelo topo (`top:-16.25vw`, começando logo acima do cabelo delas), e a seção cresce o necessário (`min-height: max(100svh, 32.5vw + texto)`) para o texto nunca encostar no rosto. Título e subtítulo ficam numa linha cada, embaixo, num degradê que sobe do vinho. O cabeçalho começa com logo e menu escuros sobre a foto clara e vira vinho com logo creme ao rolar.
 - **Abertura:**
   - Celular: título, vídeo e texto, nessa ordem.
   - Computador: título em 3 linhas no topo do vídeo e o texto terminando na base dele.
   - A frase "E, principalmente…" e a legenda sobre o vídeo saíram a pedido.
 - **Módulos:** o título fica parado e os cards sobem um por cima do outro (`position: sticky`), no celular e no computador.
-- **Professoras:** recortadas da foto das duas com o Vision da Apple. O recorte devolve as duas juntas, e a separação foi feita à mão na linha onde o ombro de uma encontra o da outra. Elas ficam em pé sobre uma linha, na mesma escala, e o nome e a formação começam na mesma altura.
+- **Professoras:** recortadas com o Vision da Apple das fotos individuais dos stories (`julia-recorte-v2.webp`, `nicoly-recorte-v2.webp`). Elas ficam em pé sobre uma linha, na mesma escala, e o nome e a formação começam na mesma altura.
 - **Inscrição no computador:** título e texto centralizados, formulário em duas colunas no mesmo quadro (dados pessoais à esquerda, escolaridade e pagamento à direita) para caber na tela de um notebook.
 - **Botões:** todos dizem "Garantir minha vaga", em todas as seções. No celular há também uma barra fixa com o preço.
 - **Ícone da aba:**
   - `favicon.svg` troca de cor com o tema do navegador: ameixa no claro, creme no escuro (`prefers-color-scheme` dentro do SVG). Segue o tema claro/escuro do sistema ou do Chrome. Um tema colorido personalizado do Chrome não é detectável.
   - O Safari não usa SVG e fica com os PNGs (fundo ameixa).
 
-Lighthouse (local, 20/10/2026): celular 99, computador 100, acessibilidade 100.
+- **Rodapé no celular:** "O curso" e "Contato" lado a lado, em duas colunas.
+
+Lighthouse (no ar, 20/10/2026): celular 99, computador 100, acessibilidade 100.
+
+Conferido em 11 tamanhos de celular: Galaxy Fold fechado, Galaxy S8, Galaxy S20 a S24, iPhone SE, iPhone mini, Galaxy S23 Ultra, iPhone 13/14, iPhone 15/16 Pro, Pixel/Galaxy A, iPhone 13 Pro Max e iPhone 15/16 Pro Max. Nenhum vaza para o lado, os botões não quebram linha e o botão do topo aparece na primeira tela em todos.
+
+**Cache das imagens:** a pasta `assets/` fica guardada no celular por 7 dias. Para trocar uma imagem, salve com outro nome (ex.: `-v3.webp`) e atualize o HTML. Se usar o mesmo nome, quem já visitou continua vendo a antiga.
 
 Rodapé: WhatsApp (34) 99945-9639 só como contato, ao lado do Instagram. Não é botão de conversão.
 
