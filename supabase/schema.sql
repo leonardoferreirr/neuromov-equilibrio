@@ -1,5 +1,5 @@
--- Banco das inscrições do curso. Mora no projeto Supabase "espaco-crescer" (São Paulo), numa pasta só
--- da Neuromov: schema "neuromov" e bucket "neuromov-comprovantes".
+-- Banco das inscrições do curso. Mora no projeto Supabase "Neuromov" (ref ybdazlcebecsqlpvkxlf, us-west-2),
+-- numa pasta própria: schema "neuromov" e bucket "neuromov-comprovantes".
 -- Só a função da Vercel lê e grava, com a chave secreta: anon e authenticated não enxergam o schema
 -- nem o bucket. O schema precisa estar na lista "Exposed schemas" da API para a função alcançar.
 
