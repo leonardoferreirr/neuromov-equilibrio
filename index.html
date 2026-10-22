@@ -217,6 +217,7 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
 .form__msg:empty{display:none}
 .form__fine{font-size:.8rem;color:var(--muted);text-align:center;line-height:1.5}
 .form__fine a,.foot__bot a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.form__msg .form__wa{display:flex;width:100%;margin-top:.9rem;white-space:normal;text-align:center}
 .done{display:none;text-align:center;padding:clamp(2rem,5vw,3rem) 1rem}
 .done.is-on{display:block}
 .done svg{width:52px;height:52px;color:var(--plum-900);margin:0 auto 1.2rem}
@@ -713,6 +714,50 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
     'too-many': 'Recebemos várias inscrições seguidas daqui. Aguarde alguns minutos e tente de novo.'
   };
 
+  // envio à prova de falha: tenta de novo sozinho, depois pelo endereço da Vercel (o mesmo servidor,
+  // fora do domínio próprio) e só no fim oferece o WhatsApp com os dados prontos. A chave evita
+  // inscrição em dobro quando a primeira chegou mas a resposta se perdeu.
+  var ENVIOS = ['/api/inscricao', '/api/inscricao', 'https://neuromovfisio.vercel.app/api/inscricao'];
+  var VALIDACAO = { 'invalid': 1, 'file-type': 1, 'file-size': 1, 'missing-receipt': 1, 'too-many': 1 };
+  function postar(data) {
+    var falhas = [];
+    data.chave = data.chave || (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+    function tenta(i) {
+      data.falhas = falhas.slice();
+      var ctl = window.AbortController ? new AbortController() : null, timer = ctl ? setTimeout(function () { ctl.abort(); }, 25000) : 0;
+      return fetch(ENVIOS[i], { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: ctl ? ctl.signal : undefined })
+        .then(function (r) {
+          if (r.ok) return;
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            var code = j.error || (r.status === 413 ? 'file-size' : '');
+            if (VALIDACAO[code]) { var v = new Error(code); v.code = code; v.final = true; throw v; }
+            throw new Error('http ' + r.status);
+          });
+        })
+        .then(function () { clearTimeout(timer); }, function (e) {
+          clearTimeout(timer);
+          if (e.final) throw e;
+          falhas.push(i + ':' + (e.name === 'AbortError' ? 'tempo' : String(e.message || 'rede')).slice(0, 40));
+          if (i + 1 >= ENVIOS.length) { var x = new Error('falhou'); x.code = 'falhou'; throw x; }
+          return new Promise(function (ok) { setTimeout(ok, i ? 2500 : 1200); }).then(function () { return tenta(i + 1); });
+        });
+    }
+    return tenta(0);
+  }
+  function whatsapp(data) {
+    var t = 'Olá! Tentei fazer minha inscrição no curso Equilíbrio na Prática Clínica pelo site e não consegui enviar.\n\n' +
+      'Nome: ' + data.nome + '\nE-mail: ' + data.email + '\nTelefone: ' + data.telefone + '\nEscolaridade: ' + data.escolaridade + '\nPagamento: ' + data.pagamento +
+      (data.pagamento === 'Pix' ? '\n\nVou mandar o comprovante do Pix aqui.' : '');
+    return 'https://wa.me/5534999459639?text=' + encodeURIComponent(t);
+  }
+  function planoB(data) {
+    msg.textContent = 'O site não conseguiu enviar agora. Para garantir a sua vaga, mande a inscrição pelo WhatsApp: os seus dados já vão escritos.';
+    var a = document.createElement('a');
+    a.className = 'btn btn--plum form__wa'; a.href = whatsapp(data); // mesma aba: o navegador do Instagram abre o WhatsApp direto
+    a.textContent = 'Enviar inscrição pelo WhatsApp';
+    msg.appendChild(a);
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault(); msg.textContent = '';
     var fd = new FormData(form);
@@ -728,15 +773,15 @@ fieldset.f{border:0;padding:0;margin:0;min-width:0}
     send.disabled = true; send.firstChild.textContent = 'Enviando... ';
     (f && data.pagamento === 'Pix' ? readFile(f) : Promise.resolve(null)).then(function (att) {
       data.comprovante = att;
-      return fetch('/api/inscricao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-    }).then(function (r) {
-      if (r.ok) return;
-      return r.json().catch(function () { return {}; }).then(function (j) { var e = new Error(j.error || r.status); e.code = j.error || (r.status === 413 ? 'file-size' : ''); throw e; });
+      return postar(data);
     }).then(function () {
       form.style.display = 'none'; $('#done').classList.add('is-on');
       $('#done').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
     }).catch(function (e) {
-      fail(ERROS[e.code] || (e.message === 'size' ? ERROS['file-size'] : 'Não conseguimos enviar agora. Tente de novo em instantes ou fale com a gente no Instagram @neuromov.fisio.'));
+      if (ERROS[e.code]) fail(ERROS[e.code]);
+      else if (e.message === 'size') fail(ERROS['file-size']);
+      else if (e.code === 'invalid') fail('Confira os seus dados e tente de novo.');
+      else { delete data.comprovante; planoB(data); }
     }).then(function () { send.disabled = false; send.firstChild.textContent = 'Enviar inscrição '; });
   });
   function fail(t, sel) { msg.textContent = t; if (sel) $(sel).focus(); return false; }

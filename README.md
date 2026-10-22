@@ -19,7 +19,7 @@ Nenhuma inscrição pode se perder, então o formulário usa duas vias independe
 1. **Banco (Supabase):** a inscrição e o comprovante ficam guardados primeiro, numa pasta só da Neuromov (schema `neuromov`, tabela `inscricoes`, bucket privado `neuromov-comprovantes`). O esquema está em `supabase/schema.sql`.
 2. **E-mail (Gmail):** chega para a Neuromov com os dados e o comprovante em anexo. Responder o e-mail fala direto com a pessoa inscrita.
 
-A pessoa vê "Inscrição recebida" se ao menos uma das duas funcionou. Se o e-mail falhar (senha de app revogada, Gmail fora), a inscrição fica marcada no banco e o **reenvio diário** (`api/reenviar.js`, cron da Vercel às 8h de Brasília) manda depois, no máximo uma tentativa por hora cada. O mesmo cron mantém o Supabase grátis acordado (ele pausa depois de 7 dias sem uso).
+A pessoa vê "Inscrição recebida" se ao menos uma das duas funcionou. No navegador, o envio tenta 3 vezes: duas pelo próprio site e a terceira pelo endereço da Vercel (o mesmo servidor, fora do domínio próprio, para quando a Vercel barra o domínio). Se as três falharem, aparece um botão de WhatsApp com os dados já escritos. Uma chave gerada no navegador impede a inscrição em dobro. O servidor nunca recusa uma pessoa por formato: telefone curto, comprovante faltando ou arquivo estranho viram aviso no e-mail ("· conferir" no assunto). Só recusa quando não há nome nem como falar com a pessoa. Se o e-mail falhar (senha de app revogada, Gmail fora), a inscrição fica marcada no banco e o **reenvio diário** (`api/reenviar.js`, cron da Vercel às 8h de Brasília) manda depois, no máximo uma tentativa por hora cada. O mesmo cron mantém o Supabase grátis acordado (ele pausa depois de 7 dias sem uso).
 
 Na Vercel, em **Settings > Environment Variables**:
 

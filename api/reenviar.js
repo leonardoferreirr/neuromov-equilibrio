@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     let erro = null;
     try {
       const arquivo = r.comprovante ? { buf: await L.baixarArquivo(r.comprovante), tipo: r.comprovante_tipo, nome: r.comprovante_nome || 'comprovante' } : null;
-      await L.enviarEmail(r, arquivo, r.criado_em);
+      await L.enviarEmail(r, arquivo, r.criado_em, r.avisos ? r.avisos.split('; ') : []);
       enviados++;
     } catch (e) { erro = e.message; console.error('reenviar email', r.id, e.message); }
     try { await L.marcarEnvio(r.id, !erro, erro, (r.tentativas || 0) + 1); } catch (e) { console.error('reenviar marca', e.message); }

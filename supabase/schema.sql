@@ -22,8 +22,11 @@ create table if not exists neuromov.inscricoes (
   tentativas int not null default 0,
   ultima_tentativa timestamptz,
   erro text,
-  ip_hash text               -- impressão do IP do dia, só para frear disparo em massa
+  ip_hash text,              -- impressão do IP do dia, só para frear disparo em massa
+  chave text unique          -- gerada no navegador: a mesma inscrição reenviada não vira duas
 );
+alter table neuromov.inscricoes add column if not exists chave text unique;
+alter table neuromov.inscricoes add column if not exists avisos text;  -- o que conferir (telefone curto, comprovante faltando...)
 
 alter table neuromov.inscricoes enable row level security;
 revoke all on neuromov.inscricoes from public, anon, authenticated;
